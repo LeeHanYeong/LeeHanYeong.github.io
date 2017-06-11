@@ -21,7 +21,16 @@ email: dev@azelf.com
 #   Google search results) and in your feed.xml site description.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-permalink: /:title
+# permalink: /:title
+
+# scope settings
+defaults:
+  -
+    scope:
+      path: "_posts/programming"
+      type: "posts"
+    values:
+      permalink: ":title"
 
 # Social accounts
 github_username: leehanyeong
