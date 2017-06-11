@@ -1,6 +1,7 @@
 ---
 layout: default
 permalink: /post/:title
+comments: true
 ---
 <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
@@ -14,13 +15,12 @@ permalink: /post/:title
       {% if page.author %}
         • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>
       {% endif %}</p>
+      {% if page.comments %} • <a href="{{ site.url }}{{ page.url }}#disqus_thread">0 Comments</a>{% endif %}
   </header>
 
   <div class="post-content" itemprop="articleBody">
     {{ content }}
   </div>
-
-  {% if site.disqus.shortname %}
-    {% include disqus_comments.html %}
-  {% endif %}
+  
+  {% include disqus_comments.html %}
 </article>

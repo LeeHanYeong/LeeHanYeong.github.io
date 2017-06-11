@@ -32,7 +32,9 @@ defaults:
     values:
       permalink: ":title"
 
-# Social accounts
+# Accounts
+disqus:
+  shortname: lhykr
 github_username: leehanyeong
 instagram_username: lhy.kr
 
