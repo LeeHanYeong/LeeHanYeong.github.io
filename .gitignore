@@ -3,6 +3,7 @@ _site
 .jekyll-metadata
 *.swp
 .ruby-version
+.asset-cache/
 
 
 # Created by https://www.gitignore.io/api/git,macos,python,jekyll

@@ -35,6 +35,10 @@ p, blockquote, pre,
 ul, ol, dl, figure,
 %vertical-rhythm {
   margin-bottom: $spacing-unit / 2;
+  // margin-bottom: 20px;
+}
+h2 {
+  padding-top: 15px;
 }
 
 
@@ -45,6 +49,8 @@ ul, ol, dl, figure,
 img {
   max-width: 100%;
   vertical-align: middle;
+  // display: block;
+  // margin: 0 auto;
 }
 
 
