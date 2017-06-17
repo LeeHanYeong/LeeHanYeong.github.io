@@ -107,6 +107,22 @@ drwxr-xr-x   3 lhy  staff   102B  6 17 17:13 _posts
 -rw-r--r--   1 lhy  staff   213B  6 17 17:13 index.md
 ```
 
+`jekyll`패키지 대신 `github-pages`를 사용하도록 `Gemfile`의 내용을 수정해준다.  
+`gem "jekyll"...`부분은 주석처리하고, `gem "github-pages"...`부분을 활성화시킨다.
+
+```
+➜ vi Gemfile
+...
+# gem "jekyll", "3.4.3"
+# This is the default theme for new Jekyll sites. You may change this to anything you like.
+gem "minima", "~> 2.0"
+
+# If you want to use GitHub Pages, remove the "gem "jekyll"" above and
+# uncomment the line below. To upgrade, run `bundle update github-pages`.
+# gem "github-pages", group: :jekyll_plugins
+...
+```
+
 실제 정적 사이트를 생성하고, 테스트를 위한 로컬 서버를 실행한다.
 
 ```
