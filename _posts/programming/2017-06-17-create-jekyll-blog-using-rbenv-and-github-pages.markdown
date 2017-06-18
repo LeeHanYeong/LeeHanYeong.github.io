@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "rbenv환경에서 Jekyll 블로그 만들어 GitHub Pages에 배포하기"
+title:  "rbenv환경에서 Jekyll 블로그 생성하고 GitHub Pages에 배포하기"
 categories: ['기타']
 ---
 
@@ -119,8 +119,15 @@ gem "minima", "~> 2.0"
 
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and
 # uncomment the line below. To upgrade, run `bundle update github-pages`.
-# gem "github-pages", group: :jekyll_plugins
+gem "github-pages", group: :jekyll_plugins
 ...
+```
+
+실행 전 `bundle`로 관리되는 패키지들을 업데이트 시켜준다
+
+```
+bundle install
+bundle update
 ```
 
 실제 정적 사이트를 생성하고, 테스트를 위한 로컬 서버를 실행한다.
@@ -135,7 +142,7 @@ bundle exec jekyll serve
 ## 글 작성
 `Jekyll`의 글은 기본적으로 `Markdown`을 사용하며, `_posts`폴더내부에서 `YYYY-MM-DD-title.markdown`형식을 가진 파일 하나당 하나의 글이 된다.
 
-기본예제에 글이 하나 있으니 해당 내용을 기반으로 새 글을 작성해본다. 이 포스팅에서는 `Jekyll`에서의 글 작성이나 문법은 다루지 않는다. 자세한 내용은 아래의 링크를 참조한다.
+기본예제에 글이 하나 있으니 해당 내용을 기반으로 새 글을 작성해본다. 이 포스팅에서는 `Jekyll`에서의 글 작성법이나 문법은 다루지 않는다. 자세한 내용은 아래의 링크를 참조한다.
 
 [Jekyll 공식사이트 (영문)](https://jekyllrb.com/)  
 [Jekyll 공식사이트 (한글)](https://jekyllrb-ko.github.io/)
