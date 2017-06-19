@@ -21,6 +21,8 @@ categories: ['기타']
 `Jekyll`을 로컬환경에서 실행하기 위해서는 특정 버전 이상의 `Ruby`가 필요하다. `macOS`에 기본설치된 `Ruby`는 버전이 낮기때문에, 시스템의 `Ruby`를 업그레이드하거나 `Ruby`의 버전관리도구를 사용하는 방법이 있다.  
 개인적으로 시스템에 이미 설치된 파이썬이나 루비를 변경하는것을 선호하지 않기 때문에, 여기서는 `Ruby`의 버전관리도구중 하나인 `rbenv`를 사용한다.
 
+`Ubuntu Linux`사용자들은 [이 포스팅](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-16-04)을 참조한다.
+
 #### Homebrew설치
 `rbenv`를 설치하기 위해 macOS용 패키지 관리자인 `Homebrew`를 이용한다.  
 
