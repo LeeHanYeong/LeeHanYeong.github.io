@@ -1,0 +1,118 @@
+---
+layout: post
+title:  "클린 코드를 위한 테스트 주도 개발 - Chapter02 ~ 04"
+categories: ['tdd']
+---
+
+이 시리즈는 클린 코드를 위한 테스트 주도 개발 e-book을 진행하며 책과 최신버전에서의 차이점이나, 설명이 생략되어 있는 부분들에 대해 기술한다.
+
+---
+
+# Chapter02
+이 챕터에는 특별한 추가 요소가 없다
+
+---
+
+# Chapter03
+## superlists/urls.py에 내용을 추가한 이후
+
+```python
+from django.conf.urls import url
+
+from lists import views
+
+urlpatterns = [
+    url(r'^$', views.home_page, name='home'),
+    # url(r'^admin/', include(admin.site.urls)),
+]
+```
+위 내용을 추가한 후 `./manage.py test`를 실행했을 때의 결과가 다르다.
+
+```
+# 책
+[...]
+AttributeError: 'NoneType' object has no attribute 'rindex'
+
+# 실제 결과
+[...]
+TypeError: view must be a callable or a list/tuple in the case of include().
+```
+
+---
+
+# Chapter04
+이 챕터에는 특별한 추가 요소가 없다
+
+---
+
+# Chapter05
+## Wiring Up Our Form to Send a POST Request
+> list/templates/home.html을 수정한 후
+
+{% raw %}
+`{% csrf_token %}`을 넣은 후, `test_home_page_returns_correct_html()`에서 `AssertionError`가 발생한다.
+{% endraw %}
+
+```
+FAIL: test_home_page_returns_correct_html (lists.tests.HomePageTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/lhy/projects/tdd/superlists/lists/tests.py", line 17, in test_home_page_returns_correct_html
+    self.assertEqual(response.content.decode(), expected_html)
+AssertionError: '<htm[134 chars]t\t\t<input type=\'hidden\' name=\'csrfmiddlew[259 chars]tml>' != '<htm[134 chars]t\t\t\n\t\t\t<input type="text" name="item_tex[130 chars]tml>'
+```
+
+{% raw %}
+이 오류는 `{% csrf_token %}`에 의해 생성된 `input`요소의 값이 매번 달라서 발생하며, 해당 부분을 정규식으로 삭제처리해주면 정상작동한다.
+{% endraw %}
+
+```python
+# lists/tests.py
+
+class HomePageTest(TestCase):
+    pattern_input_csrf = re.compile(r'<input[^>]*csrfmiddlewaretoken[^>]*>')
+    
+    ...
+    
+    def test_home_page_returns_correct_html(self):
+      request = HttpRequest()
+      response = home_page(request)
+      expected_html = render_to_string('home.html')
+      self.assertEqual(
+          re.sub(self.pattern_input_csrf, '', response.content.decode()),
+          re.sub(self.pattern_input_csrf, '', expected_html)
+      )
+```
+
+
+## Passing Python Variables to Be Rendered in the Template
+> list/tests.py에서 assertEqual로 비교할 때
+
+{% raw %}
+위와 같은 오류이며, 역시 정규식을 이용해 `{% csrf_token %}`에 의해 생성된 `input`요소를 삭제해준다.
+{% endraw %}
+
+```python
+# lists/tests.py
+class HomePageTest(TestCase):
+  ...
+  
+  def test_home_page_can_save_a_POST_request(self):
+    request = HttpRequest()
+    request.method = 'POST'
+    request.POST['item_text'] = 'A new list item'
+
+    response = home_page(request)
+
+    self.assertIn('A new list item', response.content.decode())
+    expected_html = render_to_string(
+        'home.html',
+        {
+            'new_item_text': 'A new list item',
+        }
+    )
+    self.assertEqual(
+        re.sub(self.pattern_input_csrf, '', response.content.decode()),
+        re.sub(self.pattern_input_csrf, '', expected_html)
+    )
+```
