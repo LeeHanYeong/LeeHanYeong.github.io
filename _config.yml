@@ -31,12 +31,6 @@ defaults:
       type: "posts"
     values:
       permalink: ":title"
-  -
-    scope:
-      path: "_posts/tdd"
-      type: "posts"
-    values:
-      permalink: "tdd/:title"
 
 # Accounts
 disqus:
