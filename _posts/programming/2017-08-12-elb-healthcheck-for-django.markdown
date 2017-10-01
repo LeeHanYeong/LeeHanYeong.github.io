@@ -4,7 +4,7 @@ title:  "Elastic Beanstalk의 Django 애플리케이션에서 발생하는 ELB H
 categories: ['Django', 'AWS', 'Python']
 ---
 
-최근 `Django`프로젝트를 배포할 때 항상 `Docker`와 `AWS Elastic Beanstalk`을 사용하고 있다.
+최근 `Django`프로젝트를 배포할 때는 항상 `Docker`와 `AWS Elastic Beanstalk`을 사용하고 있다.
 
 이번 포스팅에서는 `Elastic Beanstalk`에 `Django`애플리케이션을 배포할 때, `Elastic Load Balancing`서비스에서 `Health check`가 실패하는 문제를 해결했던 사례를 기술한다.
 
@@ -18,7 +18,7 @@ categories: ['Django', 'AWS', 'Python']
 [Best Practices in Evaluating Elastic Load Balancing](https://aws.amazon.com/articles/1636185810492479){:style="text-align: center; display: block;"}
 ![Best]({{ site.url }}/images/elb-health-check-for-django/best.png){:style=" border: 1px solid #ddd; border-radius: 1%;"}
 
-<center>(위의 Best하다는 구조를 자동으로 구성해준다...)</center>
+<center>(위의 Best하다는 구조를 자동으로 구성해준다)</center>
 
 
 ## 100.0 % of the requests are erroring with HTTP 4xx
