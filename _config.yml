@@ -43,11 +43,17 @@ defaults:
       type: "posts"
     values:
       permalink: "mac/:title"
+  -
+    scope:
+      path: "_posts/lecture/django/instagram"
+      type: "posts"
+    values:
+      permalink: "lecture/django/instagram/:title"
 
 # Accounts
 disqus:
   shortname: lhykr
-github_username: leehanyeong
+github_username: LeeHanYeong
 instagram_username: lhy.kr
 
 # Other settings
@@ -59,7 +65,7 @@ sass:
 # Build settings
 markdown: kramdown
 theme: minima
-gems:
+plugins:
   - jekyll-feed
   - jekyll-assets
 exclude:

@@ -1,0 +1,129 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 02. 글, 댓글 모델 구현"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+- [Introduction to models](https://docs.djangoproject.com/en/1.11/topics/db/models/)
+- [The model to use to represent a User (AUTH_USER_MODEL)](https://docs.djangoproject.com/en/1.11/ref/settings/#auth-user-model)
+- [Using settings in Python code (django.conf.settings)](https://docs.djangoproject.com/en/1.11/topics/settings/#using-settings-in-python-code)
+- [Referencing the User Model (ForeignKey User reference)](https://docs.djangoproject.com/ko/1.11/topics/auth/customizing/#referencing-the-user-model)
+- [makemigrations](https://docs.djangoproject.com/en/1.11/ref/django-admin/#makemigrations)
+- [migrate](https://docs.djangoproject.com/en/1.11/ref/django-admin/#migrate)
+- [ImageField requires the Pillow library](https://docs.djangoproject.com/en/1.11/ref/models/fields/#imagefield)
+- [MEDIA_URL](https://docs.djangoproject.com/en/1.11/ref/settings/#media-url)
+- [MEDIA_ROOT](https://docs.djangoproject.com/en/1.11/ref/settings/#media-root)
+- [Managing files (User uploaded files)](https://docs.djangoproject.com/en/1.11/topics/files/#managing-files)
+
+---
+
+### post앱 생성, Post, Comment Model생성, DB migration
+
+**`Terminal`**
+
+```shell
+./manage.py startapp post
+pip install pillow
+```
+
+**`post/models.py`**
+
+```python
+from django.conf import settings
+from django.db import models
+
+
+class Post(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
+    photo = models.ImageField(upload_to='post')
+
+    def __str__(self):
+        return f'Post (PK: {self.pk}, Author: {self.author.username})'
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL)
+    content = models.TextField()
+
+    def __str__(self):
+        return f'Comment (PK: {self.pk}, Author: {self.author.username})'
+```
+
+**`config/settings.py`**
+
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'member',
+    'post',
+]
+```
+
+**`Terminal`**
+
+```shell
+./manage.py makemigrations
+./manage.py migrate
+```
+
+### Admin설정
+
+**`member/admin.py`**
+
+```python
+from django.contrib import admin
+
+from .models import Post, Comment
+
+admin.site.register(Post)
+admin.site.register(Comment)
+```
+
+### MEDIA_URL, MEDIA_ROOT 설정
+
+**`config/settings.py**
+
+```python
+...
+...
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
+STATIC_URL = '/static/'
+
+# Media files (User uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+```
+
+### MEDIA_URL이 MEDIA_ROOT의 파일과 연결되도록 설정
+
+**`config/urls.py`**
+
+```python
+from django.conf import settings
+from django.conf.urls import url
+from django.conf.urls.static import static
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+]
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT
+)
+```
+
+### 테스트용 Post를 Django Admin에서 추가
+
+`./manage.py runserver` 실행 후 [Django admin](localhost:8000/admin)으로 이동, 포스트 추가
+
+[01. 커스텀 유저 모델](/lecture/django/instagram/01.custom-user-model)에서 생성한 슈퍼유저 계정으로 로그인

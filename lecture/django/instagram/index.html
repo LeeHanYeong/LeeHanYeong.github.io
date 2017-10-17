@@ -4,20 +4,15 @@ layout: default
 
 <div class="home">
 
-  <h1 class="page-heading">Posts</h1>
-
-  {{ content }}
+  <h1 class="page-heading">Instagram</h1>
 
   <ul class="post-list">
-    {% assign post_list = site.posts | where_exp:"post", "post.path contains '_posts/programming/'" %}
+    {% assign post_list = site.posts | where_exp:"post", "post.path contains '_posts/lecture/django/instagram/'" %}
     {% for post in post_list %}
       <li>
-        {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
-        <span class="post-meta">{{ post.date | date: date_format }}</span>
-
-        <h2>
+        <h5>
           <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-        </h2>
+        </h5>
       </li>
     {% endfor %}
   </ul>

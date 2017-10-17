@@ -1,0 +1,90 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 01. 커스텀 유저 모델 사용"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+- [Specifying a custom user model](https://docs.djangoproject.com/ko/1.11/topics/auth/customizing/#specifying-a-custom-user-model)
+- [createsuperuser](https://docs.djangoproject.com/en/1.11/ref/django-admin/#createsuperuser)
+
+
+---
+
+기본 프로젝트 설정이 완료되었다는 가정하에 시작한다.
+
+**프로젝트 구조**  
+
+```shell
+# 프로젝트 컨테이너 폴더
+instagram-project/
+  # Django 프로젝트 폴더 (Sources Root)
+  instagram/
+    # 설정파일 모음 패키지
+    config/
+      __init__.py
+      ...
+```
+
+
+### member앱 생성 및 MyUser모델 생성
+
+> 추후 Custom user model을 사용할 것이기 때문에 기본 장고 유저와 충돌하지 않도록 미리 정의
+
+**`Terminal`**
+
+```shell
+./manage.py startapp member
+```
+
+**`member/models.py`**
+
+```python
+from django.contrib.auth.models import AbstractUser
+
+
+class MyUser(AbstractUser):
+    pass
+```
+
+### Custom user model을 `settings.py`에 정의
+
+> AUTH_USER_MODEL을 정의  
+> INSTALLED_APPS에 `member`추가
+
+**`config/settings.py`**
+
+```python
+...
+...
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+AUTH_USER_MODEL = 'member.MyUser'
+...
+...
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    'member',
+]
+...
+...
+```
+
+### DB migration
+
+```shell
+./manage.py makemigrations
+./manage.py migrate
+```
+
+### 슈퍼유저 생성
+
+```shell
+./manage.py createsuperuser
+```

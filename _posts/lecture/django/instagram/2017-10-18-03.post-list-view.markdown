@@ -1,0 +1,156 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 03. 포스트 목록 페이지 구현"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+- [STATICFILES_DIRS](https://docs.djangoproject.com/en/1.11/ref/settings/#staticfiles-dirs)
+- [TEMPLATES](https://docs.djangoproject.com/en/1.11/ref/settings/#templates)
+- [Retrieving all objects (Post.objects.all())](https://docs.djangoproject.com/en/1.11/topics/db/queries/#retrieving-all-objects)
+- [render](https://docs.djangoproject.com/en/1.11/topics/http/shortcuts/#render)
+- [template "static" tag](https://docs.djangoproject.com/en/1.11/ref/templates/builtins/#std:templatetag-static)
+- [template "for" tag](https://docs.djangoproject.com/en/1.11/ref/templates/builtins/#for)
+- [django.conf.urls.url](https://docs.djangoproject.com/ko/1.11/ref/urls/#django.conf.urls.url)
+[django.conf.urls.include](https://docs.djangoproject.com/ko/1.11/ref/urls/#include)
+
+---
+
+### static, templates폴더 생성 및 CSS파일 복사
+
+**`Terminal`**
+
+```shell
+cd ~/projects/instagram-project/instagram/
+mkdir static
+mkdir templates
+cd static
+mkdir css
+cd css
+wget https://gist.githubusercontent.com/LeeHanYeong/36ebc5fa6923c00048ab97e15e0d6d3f/raw/dcbb1a44cb1df10cada311f556137a8e1d54cc0a/bootstrap.min.css
+```
+
+**프로젝트 구조**
+
+```shell
+instagram-project/
+  instagram/
+    config/
+    member/
+    post/
+    static/
+    templates/
+```
+
+
+### STATICFILES_DIRS설정
+
+**`config/settings.py`**
+
+```python
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+```
+
+### TEMPLATES설정의 DIRS값 설정
+
+**`config/settings.py`**
+
+```python
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+...
+...
+```
+
+
+### 포스트 목록을 위한 view, template, url설정 및 Root urls.py에서의 include
+
+**`post/views.py`**
+
+```python
+from django.shortcuts import render
+
+from .models import Post
+
+
+def post_list(request):
+    posts = Post.objects.all()
+    context = {
+        'posts': posts,
+    }
+    return render(request, 'post/post_list.html', context)
+```
+
+**`templates/post/post_list.html`**
+
+```html
+{% raw %}{% load static %}
+<!doctype html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<title>Instagram</title>
+</head>
+<body>
+	<div class="container">
+		<h1>Post List</h1>
+
+		{% for post in posts %}
+			<div class="panel panel-default post-item">
+				<img src="{{ post.photo.url }}" alt="" class="post-image">
+				<div class="panel-body">
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</body>
+</html>{% endraw %}
+```
+
+**`post/urls.py`**
+
+```python
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.post_list, name='post_list'),
+]
+```
+
+**`config/urls.py`**
+
+```python
+from django.conf import settings
+from django.conf.urls import url, include
+from django.conf.urls.static import static
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^post/', include('post.urls', namespace='post')),
+]
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT
+)
+```
+
+<center><b>현재까지 결과</b></center>
+
+![PostList]({{ site.url }}/images/lecture/django/instagram/post_list.png)

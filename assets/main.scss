@@ -7,3 +7,15 @@
 blockquote {
   letter-spacing: 0;
 }
+p {
+  margin-bottom: 10px;
+}
+p + .highlighter-rouge {
+  margin-top: -8px;
+}
+h1, h2, h3, h4, h5, h6 {
+  padding-top: 15px;
+}
+pre {
+  tab-size: 2;
+}

@@ -62,3 +62,4 @@ sudo mount -t ext4 /dev/sdc1 /hdd
 - https://wiki.gentoo.org/wiki/Handbook:AMD64/Installation/Disks/ko
 - https://www.linux.co.kr/home/lecture/index.php?cateNo=&secNo=&theNo=&leccode=10966
 - http://plming.tistory.com/m/68
+                                                                                                                                                                                                                                          
