@@ -1,0 +1,98 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 04. 댓글 달기 구현"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+- [Request and response objects](https://docs.djangoproject.com/en/1.11/ref/request-response/#module-django.http)
+- [URL dispatcher](https://docs.djangoproject.com/ko/1.11/topics/http/urls/#url-dispatcher)
+- [redirect](https://docs.djangoproject.com/ko/1.11/topics/http/shortcuts/#redirect)
+- [Cross Site Request Forgery protection (csrf_token)](https://docs.djangoproject.com/en/1.11/ref/csrf/#module-django.middleware.csrf)
+
+---
+
+### 댓글 작성을 위한 view, url설정
+
+**`post/views.py`**
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+
+from .models import Post, Comment
+
+
+def post_list(request):
+    ...
+
+
+def comment_create(request, post_pk):
+    # 요청 메서드가 POST방식 일 때만 처리
+    if request.method == 'POST':
+        # Post인스턴스를 가져오거나 404 Response를 돌려줌
+        post = get_object_or_404(Post, pk=post_pk)
+        # request.POST에서 'content'키의 값을 가져옴
+        content = request.POST.get('content')
+
+        # 'content'키가 없었거나 내용이 입력되지 않았을 경우
+        if not content:
+            # 400(BadRequest)로 응답을 전송
+            return HttpResponse('댓글 내용을 입력하세요', status=400)
+
+        # 내용이 전달 된 경우, Comment객체를 생성 및 DB에 저장
+        Comment.objects.create(
+            post=post,
+            # 작성자는 현재 요청의 사용자로 지정
+            author=request.user,
+            content=content
+        )
+        # 정상적으로 Comment가 생성된 후
+        # 'post'네임스페이스를 가진 url의 'post_list'이름에 해당하는 뷰로 이동
+        return redirect('post:post_list')
+```
+
+`POST`요청으로 전달받은 데이터는 `request.POST`에서 사용할 수 있다.
+
+`redirect`에는 `namespace:name`형태로 `urls`에 정의해 놓은 `url`패턴을 사용할 수 있다.
+
+**`post/urls.py`**
+
+```python
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.post_list, name='post_list'),
+    url(r'^(?P<post_pk>\d+)/comment/create/$', views.comment_create, name='comment_create'),
+]
+```
+
+정규표현식에서 그룹 이름을 지정하면, 이 `url`에 연결된 뷰를 호출할 때 그룹 이름에 해당하는 키워드 인자로 값이 전달된다.
+
+### `post/post_list.html`에 댓글 입력을 위한 `Form`구현과 댓글 목록 출력
+
+**`templates/post/post_list.html`**
+
+```html
+{% raw %}{% for post in posts %}
+	<div class="panel panel-default post-item">
+		<img src="{{ post.photo.url }}" alt="" class="post-image">
+		<div class="panel-body">
+			<form action="{% url 'post:comment_create' post_pk=post.pk %}" method="POST" class="comment-form">
+				{% csrf_token %}
+				<input type="text" name="content" placeholder="댓글 달기...">
+			</form>
+		</div>
+	</div>
+{% endfor %}{% endraw %}
+```
+
+`csrf_token`은 `CSRF`보안을 위해 사용한다.
+
+
+
+<center><b>현재까지 결과</b></center>
+
+![CommentList]({{ site.url }}/images/lecture/django/instagram/comment_list.png)

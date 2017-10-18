@@ -1,0 +1,159 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 10. 로그인, 로그아웃 구현"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+- [User authentication in Django](https://docs.djangoproject.com/en/1.11/topics/auth/#user-authentication-in-django)
+- [How to log a user in](https://docs.djangoproject.com/en/1.11/topics/auth/default/#how-to-log-a-user-in)
+- [How to log a user out](https://docs.djangoproject.com/en/1.11/topics/auth/default/#how-to-log-a-user-out)
+- [is_authenticated](https://docs.djangoproject.com/en/1.11/ref/contrib/auth/#django.contrib.auth.models.User.is_authenticated)
+- [django.contrib.auth.context_processors.auth](https://docs.djangoproject.com/ko/1.11/ref/templates/api/#django-contrib-auth-context-processors-auth)
+- [Using RequestContext (context_processors)](https://docs.djangoproject.com/ko/1.11/ref/templates/api/#using-requestcontext)
+- [Rendering form error messages](https://docs.djangoproject.com/en/1.11/topics/forms/#rendering-form-error-messages)
+
+---
+
+### 로그인을 위한 form, view, template, url구현
+
+**`member/forms.py`**
+
+```python
+from django import forms
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+```
+
+
+**`member/views.py`**
+
+```python
+from django.shortcuts import render, redirect
+from django.contrib.auth import login as django_login, logout as django_logout, authenticate
+
+from .forms import LoginForm
+
+
+def login(request):
+    if request.method == 'POST':
+        # Data bounded form인스턴스 생성
+        login_form = LoginForm(request.POST)
+        # 유효성 검증에 성공할 경우
+        if login_form.is_valid():
+            # form으로부터 username, password값을 가져옴
+            username = login_form.cleaned_data['username']
+            password = login_form.cleaned_data['password']
+
+            # 가져온 username과 password에 해당하는 User가 있는지 판단한다
+            # 존재할경우 user변수에는 User인스턴스가 할당되며,
+            # 존재하지 않으면 None이 할당된다
+            user = authenticate(
+                username=username,
+                password=password
+            )
+            # 인증에 성공했을 경우
+            if user:
+                # Django의 auth앱에서 제공하는 login함수를 실행해 앞으로의 요청/응답에 세션을 유지한다
+                django_login(request, user)
+                # Post목록 화면으로 이동
+                return redirect('post:post_list')
+            # 인증에 실패하면 login_form에 non_field_error를 추가한다
+            login_form.add_error(None, '아이디 또는 비밀번호가 올바르지 않습니다')
+    else:
+        login_form = LoginForm()
+    context = {
+        'login_form': login_form,
+    }
+    return render(request, 'member/login.html', context)
+```
+
+**`templates/member/login.html`**
+
+```django
+{% raw %}{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="login">
+	<form action="" method="post">
+		{% csrf_token %}
+		{% for field in login_form %}
+			<div class="form-group">
+				{{ field.label_tag }}
+				{{ field }}
+				{% if field.errors %}
+					{% for error in field.errors %}
+					<span class="help-block">{{ error }}</span>
+					{% endfor %}
+				{% endif %}
+			</div>
+		{% endfor %}
+
+		{% if login_form.non_field_errors %}
+			{% for error in login_form.non_field_errors %}
+			<p class="text-danger"><b>{{ error }}</b></p>
+			{% endfor %}
+		{% endif %}
+		<button class="btn btn-primary btn-block">로그인</button>
+	</form>
+</div>
+{% endblock %}{% endraw %}
+```
+
+**`member/urls.py`**
+
+```python
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    url(r'^login/$', views.login, name='login'),
+]
+```
+
+**`config/urls.py`**
+
+```python
+...
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^post/', include('post.urls', namespace='post')),
+    url(r'^member/', include('member.urls', namespace='member')),
+]
+...
+```
+
+### 네비게이션 바에서 로그인 여부에 따라 다른 버튼 보여주기
+
+**`templates/base.html`**
+
+```django
+...
+{% raw %}<ul class="nav navbar-nav navbar-right">
+	{% if user.is_authenticated %}
+	<li><a href="">Likes</a></li>
+	<li><a href="">Profile</a></li>
+	{% else %}
+	<li><a href="{% url 'member:login' %}">Login</a></li>
+	<li><a href="">Signup</a></li>
+	{% endif %}
+</ul>{% endraw %}
+...
+```

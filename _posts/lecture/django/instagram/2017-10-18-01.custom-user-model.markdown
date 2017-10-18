@@ -29,7 +29,11 @@ instagram-project/
 
 ### member앱 생성 및 MyUser모델 생성
 
-> 추후 Custom user model을 사용할 것이기 때문에 기본 장고 유저와 충돌하지 않도록 미리 정의
+장고는 기본적으로 `django.contrib.auth`라는 인증 관련 애플리케이션을 제공하며, 특별히 사용자 모델을 지정하지 않으면 기본 유저 모델인 `django.contrib.auth.User`모델을 사용한다.
+
+만약 기본 장고 유저 모델을 사용하던 중에 커스텀 유저 모델로 변경하면 장고의 `makemigrations`명령어로는 기존의 데이터베이스에서의 변경점을 자동으로 마이그레이션 파일로 만들지 못한다.
+
+추후 커스텀 유저 모델을 사용할 가능성이 조금이라도 있다면 기본 장고 유저와 충돌하지 않도록 미리 정의 해 주는 것이 좋다.
 
 **`Terminal`**
 
@@ -47,10 +51,12 @@ class MyUser(AbstractUser):
     pass
 ```
 
+커스텀 유저 모델을 정의할 때는 `AbstractUser`또는 `AbstractBaseUser`클래스를 상속받는다.
+
 ### Custom user model을 `settings.py`에 정의
 
-> AUTH_USER_MODEL을 정의  
-> INSTALLED_APPS에 `member`추가
+AUTH_USER_MODEL에 사용자 모델로 사용할 클래스를 `애플리케이션.유저모델 클래스`형식으로 적어준다.
+INSTALLED_APPS에 `member`추가
 
 **`config/settings.py`**
 

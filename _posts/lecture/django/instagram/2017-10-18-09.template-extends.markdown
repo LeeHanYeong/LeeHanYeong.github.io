@@ -1,0 +1,235 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 09. 템플릿 extends, include, 네비게이션 바 추가"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+- [extends](https://docs.djangoproject.com/ko/1.11/ref/templates/builtins/#extends)
+- [include](https://docs.djangoproject.com/ko/1.11/ref/templates/builtins/#include)
+
+---
+
+### 템플릿에서 중복을 막기 위해 `base.html`파일 생성 및 `extends`템플릿 태그로 해당 파일 사용
+
+**`templates/base.html`**
+
+```django
+{% raw %}{% load static %}
+<!doctype html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<title>Instagram</title>
+</head>
+<body>
+	<div class="container">
+		{% if messages %}
+			{% for message in messages %}
+				<div class="alert-message alert
+					{% if message.tags == 'info' %}
+						alert-info
+					{% elif message.tags == 'success' %}
+						alert-success
+					{% elif message.tags == 'warning' %}
+						alert-warning
+					{% elif message.tags == 'error' %}
+						alert-danger
+					{% endif %}
+					">{{ message }}</div>
+			{% endfor %}
+		{% endif %}
+
+		<h1>{% block title %}{% endblock %}</h1>
+
+		{% block content %}
+		{% endblock %}
+	</div>
+</body>
+</html>{% endraw %}
+```
+
+**`templates/post/post_list.html`**
+
+```django
+{% raw %}{% extends 'base.html' %}
+
+{% block title %}Post List{% endblock %}
+{% block content %}
+<div>
+	{% for post in posts %}
+		<div class="panel panel-default post-item">
+			<a href="{% url 'post:post_detail' post_pk=post.pk %}">
+				<img src="{{ post.photo.url }}" alt="" class="post-image">
+			</a>
+			<div class="panel-body">
+				{% if post.comments.exists %}
+				<ul class="comment-list">
+					{% for comment in post.comments.all %}
+					<li class="comment">
+						<span class="comment-author">{{ comment.author }}</span>
+						<span class="comment-content">{{ comment.content }}</span>
+					</li>
+					{% endfor %}
+				</ul>
+				<hr>
+				{% endif %}
+				<form action="{% url 'post:comment_create' post_pk=post.pk %}" method="POST" class="comment-form">
+					{% csrf_token %}
+					{{ comment_form.content }}
+				</form>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+{% endblock %}{% endraw %}
+```
+
+**`templates/post/post_detail.html`**
+
+```django
+{% raw %}{% extends 'base.html' %}
+
+{% block title %}Post Detail{% endblock %}
+{% block content %}
+<div>
+	<div class="panel panel-default post-item">
+			<img src="{{ post.photo.url }}" alt="" class="post-image">
+			<div class="panel-body">
+				{% if post.comments.exists %}
+				<ul class="comment-list">
+					{% for comment in post.comments.all %}
+					<li class="comment">
+						<span class="comment-author">{{ comment.author }}</span>
+						<span class="comment-content">{{ comment.content }}</span>
+					</li>
+					{% endfor %}
+				</ul>
+				<hr>
+				{% endif %}
+				<form action="{% url 'post:comment_create' post_pk=post.pk %}" method="POST" class="comment-form">
+					{% csrf_token %}
+					{{ comment_form.content }}
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}{% endraw %}
+```
+
+### 중복되는 Post부분을 `templates/include/post.html`에 작성하고 `include`태그를 사용해서 대체
+
+**`templates/include/post.html`**
+
+```django
+{% raw %}<div class="panel panel-default post-item">
+	{% if post_type == 'list' %}
+	<a href="{% url 'post:post_detail' post_pk=post.pk %}">
+		<img src="{{ post.photo.url }}" alt="" class="post-image">
+	</a>
+	{% else %}
+		<img src="{{ post.photo.url }}" alt="" class="post-image">
+	{% endif %}
+	<div class="panel-body">
+		{% if post.comments.exists %}
+		<ul class="comment-list">
+			{% for comment in post.comments.all %}
+			<li class="comment">
+				<span class="comment-author">{{ comment.author }}</span>
+				<span class="comment-content">{{ comment.content }}</span>
+			</li>
+			{% endfor %}
+		</ul>
+		<hr>
+		{% endif %}
+		<form action="{% url 'post:comment_create' post_pk=post.pk %}" method="POST" class="comment-form">
+			{% csrf_token %}
+			{{ comment_form.content }}
+		</form>
+	</div>
+</div>{% endraw %}
+```
+
+**`templates/post/post_list.html`**
+
+```django
+{% raw %}{% extends 'base.html' %}
+
+{% block title %}Post List{% endblock %}
+{% block content %}
+<div>
+	{% for post in posts %}
+		{% include 'include/post.html' with post_type='list' %}
+	{% endfor %}
+</div>
+{% endblock %}{% endraw %}
+```
+
+**`templates/post/post_detail.html`**
+
+```django
+{% raw %}{% extends 'base.html' %}
+
+{% block title %}Post Detail{% endblock %}
+{% block content %}
+<div>
+	{% include 'include/post.html' %}
+</div>
+{% endblock %}{% endraw %}
+```
+
+## 템플릿에 네비게이션 바 추가
+
+**`Terminal`**
+
+```shell
+cd ~/projects/instagram-project/instagram/static
+mkdir js
+cd js
+wget https://gist.githubusercontent.com/LeeHanYeong/36ebc5fa6923c00048ab97e15e0d6d3f/raw/471d451ea5214a903567776d025e64fe1822c0cb/bootstrap.min.js
+wget https://gist.githubusercontent.com/LeeHanYeong/36ebc5fa6923c00048ab97e15e0d6d3f/raw/fb6301bff3dba6d220e4609cf556f21d399d1a24/jquery.min.js
+```
+
+**`templates/base.html`**
+
+```django
+{% raw %}<!-- <link>태그들 아래에 추가 -->
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+  
+<!-- <body>태그 바로 밑에 추가 -->
+<nav class="top-nav navbar navbar-static-top navbar-default">
+	<div class="container">
+		<div class="navbar-header">
+			<a href="{% url 'post:post_list' %}" class="navbar-brand">Instagram</a>
+		</div>
+
+		<div class="collapse navbar-collapse">
+			<form action="" class="navbar-form navbar-left search-hashtag-form" role="search">
+				<div class="form-group">
+					<input type="text" class="form-control search-hashtag-input" placeholder="해시태그 검색...">
+				</div>
+			</form>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="">Likes</a></li>
+				<li><a href="">Profile</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>{% endraw %}
+```
+
+<center><b>중간 사이즈 화면</b></center>
+![MediumSize]({{ site.url }}/images/lecture/django/instagram/navbar-md.png)
+
+---
+
+<center><b>작은 사이즈 화면 (토글버튼 동작 확인)</b></center>
+![MediumSize]({{ site.url }}/images/lecture/django/instagram/navbar-xs.png)

@@ -28,7 +28,11 @@ cd static
 mkdir css
 cd css
 wget https://gist.githubusercontent.com/LeeHanYeong/36ebc5fa6923c00048ab97e15e0d6d3f/raw/dcbb1a44cb1df10cada311f556137a8e1d54cc0a/bootstrap.min.css
+wget https://gist.githubusercontent.com/LeeHanYeong/36ebc5fa6923c00048ab97e15e0d6d3f/raw/8df3c57f3614c3f2dbf3cd051b2a1c9587e75907/style.css
 ```
+
+CSS작성은 이 강의에서 다루지 않는다. 여기서는 부트스트랩 CSS파일과 미리 작성한 CSS파일을 가져와 사용한다.  
+`wget`명령어가 없다면 설치 후 사용한다.
 
 **프로젝트 구조**
 
@@ -38,7 +42,9 @@ instagram-project/
     config/
     member/
     post/
+    # 프로젝트의 정적 파일(CSS, JS...)들을 저장
     static/
+    # 프로젝트에서 사용할 템플릿(HTML) 파일들을 저장
     templates/
 ```
 
@@ -56,6 +62,8 @@ STATICFILES_DIRS = [
 ]
 ```
 
+`STATIC_URL`로 시작하는 요청은 `STATICFILES_DIRS`에 정의된 경로 목록에서 파일을 검색해 응답으로 돌려준다.
+
 ### TEMPLATES설정의 DIRS값 설정
 
 **`config/settings.py`**
@@ -70,6 +78,8 @@ TEMPLATES = [
 ...
 ...
 ```
+
+템플릿 파일을 불러올 때는 `TEMPLATES`설정의 `DIRS`내의 경로 목록에서 파일을 검색해 가져온다.
 
 
 ### 포스트 목록을 위한 view, template, url설정 및 Root urls.py에서의 include
@@ -90,9 +100,11 @@ def post_list(request):
     return render(request, 'post/post_list.html', context)
 ```
 
+전체 `Post`목록을 가져와 `posts`라는 키로 템플릿 렌더링 함수에 전달한다
+
 **`templates/post/post_list.html`**
 
-```html
+```django
 {% raw %}{% load static %}
 <!doctype html>
 <html lang="ko">
@@ -150,6 +162,9 @@ urlpatterns += static(
     document_root=settings.MEDIA_ROOT
 )
 ```
+`include`함수는 다른 `urls`모듈을 가져와 첫 번째 인수로 주어진 URL의 뒤쪽에 패턴들이 매칭되도록 한다.
+
+`namespace`에 이름을 붙이면, 각각의 `urls`모듈을 템플릿이나 뷰에서 사용할 때 같은 URL이름도 모듈별로 분리된 이름을 가질 수 있도록 해준다.
 
 <center><b>현재까지 결과</b></center>
 

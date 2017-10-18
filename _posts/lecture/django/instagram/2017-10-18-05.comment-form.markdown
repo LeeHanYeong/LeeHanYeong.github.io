@@ -1,0 +1,73 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 05. 댓글 달기에 Form클래스 사용"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+- [STATICFILES_DIRS](https://docs.djangoproject.com/en/1.11/ref/settings/#staticfiles-dirs)
+- [TEMPLATES](https://docs.djangoproject.com/en/1.11/ref/settings/#templates)
+- [Retrieving all objects (Post.objects.all())](https://docs.djangoproject.com/en/1.11/topics/db/queries/#retrieving-all-objects)
+- [render](https://docs.djangoproject.com/en/1.11/topics/http/shortcuts/#render)
+- [template "static" tag](https://docs.djangoproject.com/en/1.11/ref/templates/builtins/#std:templatetag-static)
+- [template "for" tag](https://docs.djangoproject.com/en/1.11/ref/templates/builtins/#for)
+- [django.conf.urls.url](https://docs.djangoproject.com/ko/1.11/ref/urls/#django.conf.urls.url)
+[django.conf.urls.include](https://docs.djangoproject.com/ko/1.11/ref/urls/#include)
+
+---
+
+### `CommentForm`클래스 작성
+
+장고에서 폼을 사용할 때는 `Form`클래스를 사용해서 클래스 형태로 폼을 관리한다.
+
+**`post/forms.py`**
+
+```python
+from django import forms
+
+
+class CommentForm(forms.Form):
+    content = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'class': 'content',
+                'placeholder': '댓글 달기...',
+            }
+        )
+    )
+```
+
+위와 같이 `widget`속성과 `attrs`속성을 사용해 폼의 요소가 어떤 위젯을 사용하고, 어떤 속성을 추가로 가질 지 정할 수 있다.
+
+**`post/views.py`**
+
+```python
+...
+from .forms import CommentForm
+
+...
+
+def comment_create(request, post_pk):
+    # 요청 메서드가 POST방식 일 때만 처리
+    if request.method == 'POST':
+        # Post인스턴스를 가져오거나 404 Response를 돌려줌
+        post = get_object_or_404(Post, pk=post_pk)
+        # request.POST데이터를 이용한 Bounded Form생성
+        comment_form = CommentForm(request.POST)
+        # 올바른 데이터가 Form인스턴스에 바인딩 되어있는지 유효성 검사
+        if comment_form.is_valid():
+            # 유효성 검사에 통과하면 Comment객체 생성 및 DB저장
+            Comment.objects.create(
+                post=post,
+                # 작성자는 현재 요청의 사용자로 지정
+                author=request.user,
+                content=comment_form.cleaned_data['content']
+            )
+            # 정상적으로 Comment가 생성된 후
+            # 'post'네임스페이스를 가진 url의 'post_list'이름에 해당하는 뷰로 이동
+            return redirect('post:post_list')
+```
+
+데이터의 유효성 검증과 관련된 로직은 전부 `Form`을 상속받은 클래스에서 처리하도록 해야한다.
+
+검증이 끝났을 경우, 유효성 검증에 통과한 데이터는 `cleaned_data`속성에 추가된다.

@@ -1,0 +1,70 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 07. ModelForm을 사용하도록 CommentForm 리팩토링"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+- [ModelForm](https://docs.djangoproject.com/en/1.11/topics/forms/modelforms/#modelform)
+
+---
+
+`ModelForm`은 모델 클래스와 밀접하게 연관되어 있는 폼이다.
+
+기본적으로는 연결된 모델 클래스의 필드에 해당하는 폼 요소들을 자동으로 만들어주며, 모델 클래스나 모델 클래스의 필드가 가진 유효성 검증도 자동으로 수행한다.
+
+`save()`메서드를 이용해 연결된 모델 클래스의 인스턴스를 생성한다.
+
+### CommentForm클래스 수정
+
+**`post/forms.py`**
+
+```python
+from django import forms
+
+from .models import Comment
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = (
+            'content',
+        )
+        widgets = {
+            'content': forms.TextInput(
+                attrs={
+                    'class': 'content',
+                    'placeholder': '댓글 달기...',
+                }
+            )
+        }
+
+    def clean_content(self):
+        data = self.cleaned_data['content']
+        errors = []
+        if data == '':
+            errors.append(forms.ValidationError('댓글 내용을 입력해주세요'))
+        elif len(data) > 50:
+            errors.append(forms.ValidationError('댓글 내용은 50자 이하로 입력해주세요'))
+        if errors:
+            raise forms.ValidationError(errors)
+        return data
+```
+
+## ModelForm을 이용하도록 view수정
+
+**`post/views.py`**
+
+```python
+# comment_create함수의 if문 아래부분을 아래와 같이 변경
+if comment_form.is_valid():
+    # 유효성 검사에 통과하면 ModelForm의 save()호출로 인스턴스 생성
+    # DB에 저장하지 않고 인스턴스만 생성하기 위해 commit=False옵션 지정
+    comment = comment_form.save(commit=False)
+    # CommentForm에 지정되지 않았으나 필수요소인 author와 post속성을 지정
+    comment.post = post
+    comment.author = request.user
+    # DB에 저장
+    comment.save()
+```

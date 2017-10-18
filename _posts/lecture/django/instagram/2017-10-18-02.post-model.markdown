@@ -51,6 +51,8 @@ class Comment(models.Model):
         return f'Comment (PK: {self.pk}, Author: {self.author.username})'
 ```
 
+`ForeignKey`필드에서 유저 모델에 대한 연결을 만들고자 할 경우, 위와 같이 `django.conf.settings`에서 값을 가져오는 형태로 사용한다.
+
 **`config/settings.py`**
 
 ```python
@@ -87,6 +89,8 @@ admin.site.register(Post)
 admin.site.register(Comment)
 ```
 
+관리자 페이지에서 관리될 모델 클래스를 등록한다.
+
 ### MEDIA_URL, MEDIA_ROOT 설정
 
 **`config/settings.py**
@@ -102,6 +106,8 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 ```
+
+`MEDIA_URL`로 시작하는 요청은 `MEDIA_ROOT`에서 찾은 파일을 응답으로 보내주고자 두 경로를 각각 지정한다.
 
 ### MEDIA_URL이 MEDIA_ROOT의 파일과 연결되도록 설정
 
@@ -121,6 +127,8 @@ urlpatterns += static(
     document_root=settings.MEDIA_ROOT
 )
 ```
+
+`django.conf.urls.static.static()`함수는 첫 번째 인자로 주어진 경로(`MEDIA_URL`)로 요청이 올 경우, `document_root`에 지정된 경로에서 파일을 찾아 응답으로 보내준다.
 
 ### 테스트용 Post를 Django Admin에서 추가
 
