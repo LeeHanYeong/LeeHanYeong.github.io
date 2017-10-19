@@ -48,7 +48,7 @@ instagram-project/
 from django.contrib.auth.models import AbstractUser
 
 
-class MyUser(AbstractUser):
+class User(AbstractUser):
     pass
 ```
 
@@ -66,7 +66,7 @@ INSTALLED_APPS에 `member`추가
 ...
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-AUTH_USER_MODEL = 'member.MyUser'
+AUTH_USER_MODEL = 'member.User'
 ...
 ...
 INSTALLED_APPS = [
@@ -81,6 +81,19 @@ INSTALLED_APPS = [
 ]
 ...
 ...
+```
+
+### Django admin에 Custom User등록
+
+**`member/admin.py`**
+
+```python
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+
+from .models import User
+
+admin.site.register(User, UserAdmin)
 ```
 
 ### DB migration
