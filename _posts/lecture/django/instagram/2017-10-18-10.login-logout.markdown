@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Django로 인스타그램 만들기 - 10. 로그인, 로그아웃 구현"
+title:  "Django로 인스타그램 만들기 - 10. 로그인, 로그아웃"
 categories: ['Django', 'Python']
 ---
 

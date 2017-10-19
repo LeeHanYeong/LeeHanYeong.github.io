@@ -1,0 +1,97 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 12. Post 등록"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+
+- [ModelForm](https://docs.djangoproject.com/ko/1.11/topics/forms/modelforms/#modelform)
+- [include tag](https://docs.djangoproject.com/ko/1.11/ref/templates/builtins/#include)
+
+---
+
+### 글 등록(Post create)을 위한 form, view, template, url구현
+
+**`post/forms.py`**
+
+```python
+from django import forms
+
+from .models import Comment, Post
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = (
+            'photo',
+        )
+```
+
+
+**`post/views.py`**
+
+```python
+from .forms import CommentForm, PostForm
+...
+...
+
+def post_create(request):
+    if request.method == 'POST':
+        # PostForm은 파일을 처리하므로 request.FILES도 함께 바인딩
+        post_form = PostForm(request.POST, request.FILES)
+        if post_form.is_valid():
+            # author필드를 채우기 위해 인스턴스만 생성
+            post = post_form.save(commit=False)
+            # author필드를 채운 후 DB에 저장
+            post.author = request.user
+            post.save()
+
+            # 성공 알림을 messages에 추가 후 post_list뷰로 이동
+            messages.success(request, '사진이 등록되었습니다')
+            return redirect('post:post_list')
+    else:
+        post_form = PostForm()
+
+    context = {
+        'post_form': post_form,
+    }
+    return render(request, 'post/post_create.html', context)
+```
+
+**`templates/post/post_create.html`**
+
+```django
+{% raw %}{% extends 'base.html' %}
+
+{% block title %}Post create{% endblock %}
+{% block content %}
+<div class="post-create">
+	{% include 'include/form.html' with form=post_form submit_title='등록' enctype='file' %}
+</div>
+{% endblock %}{% endraw %}
+```
+
+**`post/urls.py`**
+
+```python
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.post_list, name='post_list'),
+    url(r'^create/$', views.post_create, name='post_create'),
+    url(r'^(?P<post_pk>\d+)/$', views.post_detail, name='post_detail'),
+    url(r'^(?P<post_pk>\d+)/comment/create/$', views.comment_create, name='comment_create'),
+]
+```
+
+### `include/form.html`파일에서 `form`요소의 `enctype`변수를 받아 지정하도록 변경
+
+**`templates/include/form.html`**
+
+```django
+{% raw %}<form action="" method="post"{% if enctype == 'file' %} enctype="multipart/form-data"{% endif %}>{% endraw %}
+```

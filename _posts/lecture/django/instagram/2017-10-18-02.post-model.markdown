@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Django로 인스타그램 만들기 - 02. 글, 댓글 모델 구현"
+title:  "Django로 인스타그램 만들기 - 02. Post, Comment 모델"
 categories: ['Django', 'Python']
 ---
 
