@@ -163,8 +163,15 @@ urlpatterns = [
 **`member/views.py`**
 
 ```python
+from django.contrib.auth import (
+    authenticate,
+    login as django_login,
+    logout as django_logout,
+)
+
+
 def logout(request):
-    django_login(request)
+    django_logout(request)
     return redirect('post:post_list')
 ```
 
