@@ -157,3 +157,41 @@ urlpatterns = [
 </ul>{% endraw %}
 ...
 ```
+
+### 로그아웃을 위한 view, url구현 및 `base.html`에 로그아웃 버튼 추가
+
+**`member/views.py`**
+
+```python
+def logout(request):
+    django_login(request)
+    return redirect('post:post_list')
+```
+
+**`member/urls.py`**
+
+```python
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    url(r'^login/$', views.login, name='login'),
+    url(r'^logout/$', views.logout, name='logout'),
+]
+```
+
+**`templates/base.html`**
+
+```django
+{% raw %}<ul class="nav navbar-nav navbar-right">
+	{% if user.is_authenticated %}
+	<li><a href="">Likes</a></li>
+	<li><a href="">Profile</a></li>
+	<li><a href="{% url 'member:logout' %}">Logout</a></li>
+	{% else %}
+	<li><a href="{% url 'member:login' %}">Login</a></li>
+	<li><a href="">Signup</a></li>
+	{% endif %}
+</ul>{% endraw %}
+```
