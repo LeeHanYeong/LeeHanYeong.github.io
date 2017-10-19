@@ -6,6 +6,7 @@ categories: ['Django', 'Python']
 
 **참고문서**
 - [Specifying a custom user model](https://docs.djangoproject.com/ko/1.11/topics/auth/customizing/#specifying-a-custom-user-model)
+- [Extending Django's default User](https://docs.djangoproject.com/ko/1.11/topics/auth/customizing/#extending-django-s-default-user)
 - [createsuperuser](https://docs.djangoproject.com/en/1.11/ref/django-admin/#createsuperuser)
 
 
