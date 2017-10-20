@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Django로 인스타그램 만들기 - 05. 댓글 달기에 Form클래스 사용"
+title:  "Django로 인스타그램 만들기 - 05. Comment생성에 Form클래스 사용"
 categories: ['Django', 'Python']
 ---
 

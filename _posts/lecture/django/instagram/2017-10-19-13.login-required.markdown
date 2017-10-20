@@ -1,0 +1,46 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 13. Post와 Comment생성 시 로그인 요구 및 이후 동작 설정"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+
+- [login_required()](https://docs.djangoproject.com/en/1.11/topics/auth/default/#django.contrib.auth.decorators.login_required)
+- [LOGIN_REDIRECT_URL](https://docs.djangoproject.com/en/1.11/ref/settings/#logout-redirect-url)
+- [LOGIN_URL](https://docs.djangoproject.com/en/1.11/ref/settings/#login-url)
+
+---
+
+### post_create와 comment_create뷰에 접근하려면 로그인이 가능하도록 데코레이터 설정
+
+**`post/views.py`**
+
+```python
+from django.contrib.auth.decorators import login_required
+...
+...
+
+@login_required
+def post_create(request):
+  ...
+  
+@login_required
+def comment_create(request, post_pk):
+  ...
+```
+
+### login_required()의 동작을 정하는 settings값 설정
+
+**`config/settings.py`**
+
+```python
+# 사용자 정의 유저 모델
+AUTH_USER_MODEL = 'member.User'
+
+# 로그인이 완료되면 이동할 URL
+LOGIN_REDIRECT_URL = 'post:post_list'
+
+# 로그인이 필요할 경우 이동할 URL
+LOGIN_URL = 'member:login'
+```

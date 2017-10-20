@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Django로 인스타그램 만들기 - 12. Post 등록"
+title:  "Django로 인스타그램 만들기 - 12. Post 생성"
 categories: ['Django', 'Python']
 ---
 
