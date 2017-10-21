@@ -19,3 +19,6 @@ h1, h2, h3, h4, h5, h6 {
 pre {
   tab-size: 2;
 }
+.wrapper {
+  max-width: calc(1200px - (30px * 2))
+}
