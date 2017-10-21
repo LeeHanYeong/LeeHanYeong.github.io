@@ -9,10 +9,11 @@ categories: ['Django', 'Python']
 - [login_required()](https://docs.djangoproject.com/en/1.11/topics/auth/default/#django.contrib.auth.decorators.login_required)
 - [LOGIN_REDIRECT_URL](https://docs.djangoproject.com/en/1.11/ref/settings/#logout-redirect-url)
 - [LOGIN_URL](https://docs.djangoproject.com/en/1.11/ref/settings/#login-url)
+- [request QueryDict](https://docs.djangoproject.com/en/1.11/ref/request-response/#querydict-objects)
 
 ---
 
-### post_create와 comment_create뷰에 접근하려면 로그인이 가능하도록 데코레이터 설정
+### post_create와 comment_create뷰에 접근하려면 로그인이 가능하도록 데코레이터 설정 및 redirect에 GET파라미터의 `next`사용
 
 **`post/views.py`**
 
@@ -44,3 +45,56 @@ LOGIN_REDIRECT_URL = 'post:post_list'
 # 로그인이 필요할 경우 이동할 URL
 LOGIN_URL = 'member:login'
 ```
+
+이후 로그인 하지 않은 상태로 해당 URL에 접근하면, 로그인 페이지로 이동하며 로그인 후 다시 요청했던 URL로 리다이렉트 된다.
+
+이 때, `post_create()`뷰는 정상적으로 동작하지만, `comment_create()`뷰는 로그인 후 `comment_create()`에 해당하는 뷰로 리다이렉트되며 오류를 발생시킨다.
+
+이를 해결하기 위한 방법은 [이 포스트](/django-post-request-referer-redirect-decorator)를 참조한다.
+
+위 포스트에 설명한 데코레이터를 `utils`패키지를 만들어 작성한다.
+
+### utils패키지 생성 및 decorators모듈에 login_required함수 구현
+
+**`utils/decorators.py`**
+
+```python
+from functools import wraps
+from urllib.parse import urlparse
+
+from django.contrib.auth.decorators import login_required as django_login_required
+from django.contrib.auth.views import redirect_to_login
+from django.core.handlers.wsgi import WSGIRequest
+
+
+def login_required(view_func):
+    @wraps(view_func)
+    def decorator(*args, **kwargs):
+        if args:
+            request = args[0]
+            # Django의 view에서 첫 번째 매개변수는 HttpRequest타입의 변수이며, 이를 확인한다
+            # 또한 요청 메서드가 POST인지 확인한다
+            if isinstance(request, WSGIRequest) and request.method == 'POST':
+                # request의 user가 존재하며 인증되어있는지 확인한다
+                user = getattr(request, 'user')
+                if user and user.is_authenticated:
+                    return view_func(*args, **kwargs)
+                # 인증되지 않았을 경우, HTTP_REFERER의 path를 가져온다
+                path = urlparse(request.META['HTTP_REFERER']).path
+                # 로그인 뷰로 이동하며 GET파라미터의 next값을 path로 지정해주는
+                # redirect_to_login함수를 되돌려준다
+                return redirect_to_login(path)
+        # 위에 해당하지 않는 경우, Django에서 제공하는 기본 login_required를 데코레이터로 사용한다
+        return django_login_required(view_func)(*args, **kwargs)
+    return decorator
+```
+
+`post_create`와 `comment_create`뷰에 위 `login_required`를 임포트해서 사용한다.
+
+**`post/views.py`**
+
+```python
+from utils.decorators import login_required
+```
+
+이제 로그인하지 않은 유저가 강제로 글 작성 페이지의 URL에 접근하거나, 댓글을 작성하려는 경우 로그인 페이지로 이동하며 로그인 완료 후 원래 있던 URL로 이동한다.
