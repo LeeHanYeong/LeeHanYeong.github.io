@@ -1,0 +1,172 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 16. 유저 모델 커스터마이징"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+
+- [CustomUserManager](https://docs.djangoproject.com/ko/1.11/topics/auth/customizing/#django.contrib.auth.models.CustomUserManager)
+- [AuthCustomizing full example](https://docs.djangoproject.com/ko/1.11/topics/auth/customizing/#a-full-example)
+
+---
+
+지금까지 `AbstractUser`클래스를 상속받아 장고의 기본 유저모델과 완전히 같은 형태의 유저 모델을 사용했다.
+
+사용자 모델을 커스터마이징 할 경우, `Form`과 `Admin`에서 추가해야 할 부분을 알아본다.
+
+### User모델에 필드 추가
+
+**`member/models.py`**
+
+```python
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+
+class User(AbstractUser):
+    GENDER_MALE = 'm'
+    GENDER_FEMALE = 'f'
+    GENDER_OTHER = 'o'
+    CHOICES_GENDER = (
+        (GENDER_MALE, '남성'),
+        (GENDER_FEMALE, '여성'),
+        (GENDER_OTHER, '기타'),
+    )
+    img_profile = models.ImageField(upload_to='user', blank=True)
+    gender = models.CharField(max_length=1, choices=CHOICES_GENDER)
+
+    def __str__(self):
+        return self.username
+```
+
+### DB migration적용
+
+**`Terminal`**
+
+```shell
+cd ~/projects/instagram-project/instagram/
+./manage.py makemigrations
+
+# blank나 null이 허용되지 않으며 default값이 없는 필드가 새로 추가되었을 경우, 
+# 마이그레이션을 적용할 때 기존에 존재하던 레코드(row)들의 해당 컬럼에 어떤 데이터를 넣을 지 정해주어야 한다.
+# 매 마이그레이션 경우마다 다르지만 이 경우 '기타'성별에 해당하는 값을 넣어주기로 한다.
+You are trying to add a non-nullable field 'gender' to user without a default; we can't do that (the database needs something to populate existing rows).
+Please select a fix:
+ 1) Provide a one-off default now (will be set on all existing rows with a null value for this column)
+ 2) Quit, and let me add a default in models.py
+Select an option: 1
+Please enter the default value now, as valid Python
+The datetime and django.utils.timezone modules are available, so you can do e.g. timezone.now
+Type 'exit' to exit this prompt
+>>> 'o'
+Migrations for 'member':
+  member/migrations/0002_auto_20171022_1354.py
+    - Add field gender to user
+    - Add field img_profile to user
+    
+# 마이그레이션을 적용시킨다    
+./manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, member, post, sessions
+Running migrations:
+  Applying member.0002_auto_20171022_1354... OK
+```
+
+### Form 수정
+
+**`member/forms.py`**
+
+```python
+class SignupForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        class_update_fields = ['password1', 'password2']
+        for field_name in class_update_fields:
+            self.fields[field_name].widget.attrs.update({
+                'class': 'form-control'
+            })
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'password1',
+            'password2',
+            'img_profile',
+            'gender',
+        )
+        widgets = {
+            'username': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
+            'gender': forms.Select(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
+        }
+```
+
+### Manager추가 및 create_superuser()메서드 오버라이드, 모델의 objects재정의
+
+**`member/models.py`**
+
+```python
+from django.contrib.auth.models import AbstractUser, UserManager as BaseUserManager
+from django.db import models
+
+
+class UserManager(BaseUserManager):
+    def create_superuser(self, *args, **kwargs):
+        return super().create_superuser(gender=self.model.GENDER_OTHER, *args, **kwargs)
+
+
+class User(AbstractUser):
+    GENDER_MALE = 'm'
+    GENDER_FEMALE = 'f'
+    GENDER_OTHER = 'o'
+    CHOICES_GENDER = (
+        (GENDER_MALE, '남성'),
+        (GENDER_FEMALE, '여성'),
+        (GENDER_OTHER, '기타'),
+    )
+    img_profile = models.ImageField(upload_to='user', blank=True)
+    gender = models.CharField(max_length=1, choices=CHOICES_GENDER)
+
+    objects = UserManager()
+
+    def __str__(self):
+        return self.username
+```
+
+### admin에 추가 및 UserAdmin상속받아 추가정보 오버라이드
+
+**`member/admin.py`**
+
+```python
+from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+from .forms import SignupForm
+
+User = get_user_model()
+
+
+class UserAdmin(BaseUserAdmin):
+    fieldsets = BaseUserAdmin.fieldsets + (
+        ('추가 정보', {'fields': ('img_profile', 'gender')}),
+    )
+    add_fieldsets = BaseUserAdmin.add_fieldsets + (
+        ('추가 정보', {
+            'fields': ('img_profile', 'gender',),
+        }),
+    )
+    add_form = SignupForm
+
+
+admin.site.register(User, UserAdmin)
+```
