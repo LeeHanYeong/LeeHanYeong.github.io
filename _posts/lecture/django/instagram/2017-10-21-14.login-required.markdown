@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Django로 인스타그램 만들기 - 13. Post와 Comment생성 시 로그인 요구 및 이후 동작 설정"
+title:  "Django로 인스타그램 만들기 - 14. Post와 Comment생성 시 로그인 요구 및 이후 동작 설정"
 categories: ['Django', 'Python']
 ---
 
@@ -13,7 +13,7 @@ categories: ['Django', 'Python']
 
 ---
 
-### post_create와 comment_create뷰에 접근하려면 로그인이 가능하도록 데코레이터 설정 및 redirect에 GET파라미터의 `next`사용
+### post_create와 comment_create뷰에 접근하려면 로그인이 가능하도록 데코레이터 설정
 
 **`post/views.py`**
 

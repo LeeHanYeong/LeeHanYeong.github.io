@@ -4,6 +4,12 @@ title:  "POST메서드를 처리하는 view에 대한 login_required 데코레�
 categories: ['Django']
 ---
 
+**참고문서**
+- [login_required](https://docs.djangoproject.com/ko/1.11/topics/auth/default/#django.contrib.auth.decorators.login_required)
+- [request.META['HTTP_REFERER']](https://docs.djangoproject.com/en/1.11/ref/request-response/#django.http.HttpRequest.META)
+
+---
+
 `Django`가 `auth`애플리케이션에서 제공하는 `login_required()`데코레이터는 특정 뷰에 요청시 사용자 인증이 되어있지 않은 경우, 로그인 페이지로 리다이리렉트 응답을 보내면서 `next`파라미터에 기존 `view`의 주소를 보내주어 로그인 페이지에 해당하는 뷰에서 로그인 완료 후 기존에 요청한 `URL`로 리다이렉트 처리를 도와주는 역할을 한다.
 
 이 때, 댓글을 단다던가 하는 `POST`메서드 요청에 대해서만 응답을 제공하는 뷰의 경우에는 로그인 완료 후 `HttpResponse`를 보내주지 않으며, 실제로는 `POST`요청을 처리하는 뷰가 호출되기 이전의 뷰로 되돌아가야 하나 `login_required()` 데코레이터는 이러한 응답을 처리하지 못한다.

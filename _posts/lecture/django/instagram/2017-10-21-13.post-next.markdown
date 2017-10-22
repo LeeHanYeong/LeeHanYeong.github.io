@@ -1,0 +1,126 @@
+---
+layout: post
+title:  "Django로 인스타그램 만들기 - 13. CommentForm의 POST요청 처리 후 이전 페이지로 이동"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+
+- [login_required()](https://docs.djangoproject.com/en/1.11/topics/auth/default/#django.contrib.auth.decorators.login_required)
+- [LOGIN_REDIRECT_URL](https://docs.djangoproject.com/en/1.11/ref/settings/#logout-redirect-url)
+- [LOGIN_URL](https://docs.djangoproject.com/en/1.11/ref/settings/#login-url)
+- [request QueryDict](https://docs.djangoproject.com/en/1.11/ref/request-response/#querydict-objects)
+
+---
+
+현재는 comment_create후 무조건 `post_list`뷰로 이동한다. 하지만 댓글은 `post_list`와 `post_detail`양쪽에서 작성할 수 있으므로, 댓글 작성 후 요청을 보낸 위치로 리다이렉트되도록 뷰를 수정한다.
+
+이 때, 돌아갈 위치는 URL의 `GET`파라미터를 사용하며, 키는 `next`를 사용한다.
+
+### post_list.html에서 각 Post를 HTML상에서 구분할 수 있도록 템플릿에서 id값 추가, include할 post.html에 post_type변수 값 전달
+
+**`templates/post/post_list.html`**
+
+```django
+{% raw %}{% extends 'base.html' %}
+
+{% block title %}Post List{% endblock %}
+{% block content %}
+<div class="row">
+	{% for post in posts %}
+		<div id="post-{{ post.pk }}">
+			{% include 'include/post.html' with post_type='list' %}
+		</div>
+	{% endfor %}
+</div>
+{% endblock %}{% endraw %}
+```
+
+각 `Post`를 HTML상에서 구분할 수 있도록 for loop마다 `post-<pk>`에 해당하는 id속성값을 할당하며, `post_type`변수의 값을 `list`로 지정한다. `post_type`변수의 뜻은 아래 `post.html`에 대한 설명에서 참고한다.
+
+### post_detail.html에서 include할 post.html에 post_type변수 값 전달
+
+**`templates/post/post_detail.html`**
+
+```django
+{% raw %}{% extends 'base.html' %}
+
+{% block title %}Post Detail{% endblock %}
+{% block content %}
+<div>
+	{% include 'include/post.html' with post_type='detail' %}
+</div>
+{% endblock %}{% endraw %}
+```
+
+`post_type`변수의 값을 `detail`로 지정한다. `post_type`변수의 뜻은 아래 `post.html`에 대한 설명에서 참고한다.
+
+### post.html의 form action에 next값을 할당
+
+**`templates/include/post.html`**
+
+```django
+{% raw %}<form
+	action="{% url 'post:comment_create' post_pk=post.pk %}?next=
+	{% if post_type == 'list' %}
+		{% url 'post:post_list' %}#post-{{ post.pk }}
+	{% elif post_type == 'detail' %}
+		{% url 'post:post_detail' post_pk=post.pk %}
+	{% endif %}"
+	method="POST"
+	class="comment-form">
+	{% csrf_token %}
+	{{ comment_form.content }}
+</form>{% endraw %}
+```
+
+아래의 CommentForm에 해당하는 부분을 수정한다.
+
+`post_type`이라는 변수를 받아서 next값을 다르게 할당한다.  
+`post_type`변수의 값이`post_list`일 경우 `post:post_list` url에 해당하는 목록 페이지에서 해당 Post로 이동할 수 있는 id값에 해당하는 앵커 링크 주소를 넣어주며, `post_detail`의 경우엔 상세 페이지로 갈 수 있는 `post:post_detail` url을 생성한다.
+
+### comment_create 뷰 수정
+
+**`post/views.py`**
+
+```python
+def comment_create(request, post_pk):
+    # GET파라미터로 전달된 작업 완료 후 이동할 URL값
+    next_path = request.GET.get('next')
+
+    # 요청 메서드가 POST방식 일 때만 처리
+    if request.method == 'POST':
+        # Post인스턴스를 가져오거나 404 Response를 돌려줌
+        post = get_object_or_404(Post, pk=post_pk)
+        # request.POST데이터를 이용한 Bounded Form생성
+        comment_form = CommentForm(request.POST)
+        # 올바른 데이터가 Form인스턴스에 바인딩 되어있는지 유효성 검사
+        if comment_form.is_valid():
+            # 유효성 검사에 통과하면 ModelForm의 save()호출로 인스턴스 생성
+            # DB에 저장하지 않고 인스턴스만 생성하기 위해 commit=False옵션 지정
+            comment = comment_form.save(commit=False)
+            # CommentForm에 지정되지 않았으나 필수요소인 author와 post속성을 지정
+            comment.post = post
+            comment.author = request.user
+            # DB에 저장
+            comment.save()
+
+            # 성공 메시지를 다음 request의 결과로 전달하도록 지정
+            messages.success(request, '댓글이 등록되었습니다')
+        else:
+            # 유효성 검사에 실패한 경우
+            # 에러 목록을 순회하며 에러메시지를 작성, messages의 error레벨로 추가
+            error_msg = '댓글 등록에 실패했습니다\n{}'.format(
+                '\n'.join(
+                    [f'- {error}'
+                     for key, value in comment_form.errors.items()
+                     for error in value]))
+            messages.error(request, error_msg)
+        
+        # next parameter에 값이 담겨 온 경우, 해당 경로로 이동
+        if next_path:
+            return redirect(next_path)
+        # next parameter가 빈 경우 post_list뷰로 이동
+        return redirect('post:post_list')
+```
+
