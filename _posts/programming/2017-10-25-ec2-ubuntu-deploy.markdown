@@ -6,6 +6,11 @@ categories: ['Django', 'AWS']
 
 AWS의 EC2 인스턴스를 생성해 직접 웹 서버와 게이트웨이를 설정하는 가장 기본적인 배포방법을 설명한다.
 
+pyenv로 사용하는 파이썬 버전은 `3.6.3`
+가상환경 이름은 `fc-ec2-deploy`  
+프로젝트 폴더명은 `ec2_deploy_project`  
+를 사용한다.
+
 ---
 
 **Ubuntu Linux**  
@@ -178,9 +183,7 @@ scp -i <Private key> -r <origin> <remote>
 
 ```
 pyenv install 3.6.3
-pyenv virtualenv fc-ec2-deploy
-# 프로젝트 폴더로 이동 후
-pyenv local fc-ec2-deploy
+pyenv virtualenv 3.6.3 fc-ec2-deploy
 ```
 
 ### requirements설치
