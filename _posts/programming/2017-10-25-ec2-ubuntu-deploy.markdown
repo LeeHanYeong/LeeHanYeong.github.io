@@ -162,13 +162,13 @@ sudo chown -R ubuntu:ubuntu /srv/
 scp -i <Private key> -r <origin> <remote>
 ```
 
-### pyenv를 사용해서 python설치 및 virtualenv생성
+### pyenv를 사용해서 virtualenv 생성
 
 ```
-cd <프로젝트 폴더>
 pyenv install 3.6.3
-pyenv virtualenv mysite
-pyenv local mysite
+pyenv virtualenv fc-ec2-deploy
+# 프로젝트 폴더로 이동 후
+pyenv local fc-ec2-deploy
 ```
 
 ### requirements설치
