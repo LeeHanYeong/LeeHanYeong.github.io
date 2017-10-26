@@ -123,11 +123,16 @@ curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-
 
 #### pyenv 설정을 .zshrc에 기록
 
+**`vi ~/.zshrc`**
 ```
-vi ~/.zshrc
+...
+...
 export PATH="/home/ubuntu/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+```
+
+```
 source ~/.zshrc
 ```
 
