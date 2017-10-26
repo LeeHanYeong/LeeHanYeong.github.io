@@ -156,16 +156,16 @@ sudo chown -R ubuntu:ubuntu /srv/
 [Linux file system structure]  
 <http://www.thegeekstuff.com/2010/09/linux-file-system-structure/?utm_source=tuicool>
 
-### 프로젝트 Clone
+### 프로젝트 파일 전송
 
 ```
-git clone <자신의 프로젝트>
+scp -i <Private key> -r <origin> <remote>
 ```
 
 ### pyenv를 사용해서 python설치 및 virtualenv생성
 
 ```
-cd <clone한 폴더>
+cd <프로젝트 폴더>
 pyenv install 3.6.3
 pyenv virtualenv mysite
 pyenv local mysite
