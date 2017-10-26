@@ -81,6 +81,18 @@ Permission denied (publickey).
 
 위와같은 경우, `chmod 400 <pem file>`로 소유주만 읽을 수 있도록 권한설정을 해준다.
 
+### locale 설정
+
+서버에서 편집 후 재접속한다
+
+**`sudo vi /etc/default/locale`**
+
+```
+LC_CTYPE="en_US.UTF-8"
+LC_ALL="en_US.UTF-8"
+LANG="en_US.UTF-8"
+```
+
 
 ### 연결 후 기본 설정
 
