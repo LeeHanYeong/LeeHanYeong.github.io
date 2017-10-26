@@ -226,20 +226,29 @@ sudo adduser deploy
 ### uWSGI설치
 
 ```
-(virtualenv 환경 내부에서)
-pip install uwsgi
+pyenv virtualenv 3.6.3 uwsgi-env
+pyenv shell uwsgi-env
+(uwsgi) pip install uwsgi
 ```
 
 #### uWSGI 정상 동작 확인
 
 ```
-uwsgi --http :8080 --home (virtualenv경로) --chdir <django프로젝트 경로> -w <설정 패키지명>.wsgi
+uwsgi \
+--http :(port) \
+--home (virtualenv경로) \
+--chdir <django프로젝트 경로> \
+-w <설정 패키지명>.wsgi
 ```
 
-ex) pyenv virtualenv이름이 mysite-env, django프로젝트가 /srv/mysite-project/mysite, 설정 패키지 명이 mysite일 경우
+ex) uWSGI가 설치된 virtualenv이름이 `uwsgi-env`, Django가 설치된 virtualenv이름이 `fc-ec2-deploy`, 장고 애플리케이션의 위치가 `/srv/ec2_deploy_project/mysite`, 설정 패키지 명이 `config`일 경우
 
 ```
-uwsgi --http :8080 --home ~/.pyenv/versions/mysite-env --chdir /srv/mysite/django_app -w config.wsgi
+/home/ubuntu/.pyenv/versions/uwsgi-env/bin/uwsgi \
+--http :8080 \
+--home /home/ubuntu/.pyenv/versions/fc-ec2-deploy \
+--chdir /srv/ec2_deploy_project/mysite \
+-w config.wsgi
 ```
 
 실행 후 <ec2도메인>:8080으로 접속하여 요청을 잘 받는지 확인
