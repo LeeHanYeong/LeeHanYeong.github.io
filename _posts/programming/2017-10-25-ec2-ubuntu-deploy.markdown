@@ -9,6 +9,7 @@ AWS의 EC2 인스턴스를 생성해 직접 웹 서버와 게이트웨이를 설
 pyenv로 사용하는 파이썬 버전은 `3.6.3`
 가상환경 이름은 `fc-ec2-deploy`  
 프로젝트 폴더명은 `ec2_deploy_project`  
+설정이 담긴 패키지명은 `config`
 를 사용한다.
 
 ---
@@ -68,7 +69,10 @@ AmazonEC2FullAccess 선택
 [SSH를 사용하여 Linux 인스턴스에 연결](http://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html)
 
 ```
-ssh -i ~/.ssh/<Private key> <EC2 public domain>
+ssh -i <Private key> <username>@<EC2 public domain>
+
+# 현재 프로젝트의 경우
+ssh -i ~/.ssh/<Keypair name>.pem ubuntu@<EC2 Public domain>
 ```
 
 #### UNPROTECTED PRIVATE KEY FILE 에러 발생 시
@@ -177,6 +181,9 @@ sudo chown -R ubuntu:ubuntu /srv/
 
 ```
 scp -i <Private key> -r <origin> <remote>
+
+# 현재 프로젝트의 경우
+scp -i <Keypair name>.pem -r ~/projects/django/ec2_deploy_project ubuntu@<EC2 Public domain>:/srv
 ```
 
 ### pyenv를 사용해서 virtualenv 생성
@@ -255,15 +262,13 @@ ex) uWSGI가 설치된 virtualenv이름이 `uwsgi-env`, Django가 설치된 virt
 
 #### uWSGI 사이트 파일 작성
 
-```
-sudo mkdir /etc/uwsgi
-sudo mkdir /etc/uwsgi/sites
-sudo vi /etc/uwsgi/sites/mysite.ini
+**`(Local)ec2_deploy_project/.config/uwsgi/mysite.ini`**
 
+```ini
 [uwsgi]
-chdir = /srv/mysite-project/mysite # Django application folder
-module = config.wsgi:application # Django project name.wsgi
-home = /home/ubuntu/.pyenv/versions/mysite-env # VirtualEnv location
+chdir = /srv/ec2_deploy_project/mysite
+module = config.wsgi:application
+home = /home/ubuntu/.pyenv/versions/fc-ec2-deploy
 
 uid = deploy
 gid = deploy
@@ -274,33 +279,30 @@ chown-socket = deploy:deploy
 
 enable-threads = true
 master = true
+vacuum = true
 pidfile = /tmp/mysite.pid
+logto = /var/log/uwsgi/mysite/@(exec://date +%%Y-%%m-%%d).log
+log-reopen = true
 ```
 
 #### uWSGI site파일로 정상 동작 확인
 
 ```
-uwsgi --http :8080 -i /etc/uwsgi/sites/mysite.ini
-```
-
-sudo로 root권한으로 실행
-
-```
-sudo /home/ubuntu/.pyenv/versions/mysite-env/bin/uwsgi --http :8080 -i /etc/uwsgi/sites/mysite.ini
+# sudo로 root권한으로 실행
+sudo /home/ubuntu/.pyenv/versions/uwsgi-env/bin/uwsgi -i /srv/ec2_deploy_project/.config/uwsgi/mysite.ini
 ```
 
 #### uWSGI 서비스 설정파일 작성
 
-```
-sudo vi /etc/systemd/system/uwsgi.service
+**`(Local)ec2_deploy_project/.config/uwsgi/uwsgi.service`**
 
+```ini
 [Unit]
 Description=uWSGI Emperor service
 After=syslog.target
 
 [Service]
-ExecPre=/bin/sh -c 'mkdir -p /run/uwsgi; chown nginx:nginx /run/uwsgi'
-ExecStart=/home/ubuntu/.pyenv/versions/mysite-env/bin/uwsgi --uid nginx --gid nginx --master --emperor /etc/uwsgi/sites
+ExecStart=/home/ubuntu/.pyenv/versions/uwsgi-env/bin/uwsgi -i /srv/ec2_deploy_project/.config/uwsgi/mysite.ini
 
 Restart=always
 KillSignal=SIGQUIT
@@ -312,9 +314,12 @@ NotifyAccess=all
 WantedBy=multi-user.target
 ```
 
-#### 리부팅 시 자동으로 실행되도록 설정
+#### 서비스 파일 복사 및 시스템 재시작 시 자동으로 백그라운드에서 실행되도록 함
 
 ```
+# scp명령어로 파일을 서버에 전송한 후 실행
+sudo cp -f /srv/ec2_deploy_project/.config/uwsgi/uwsgi.service /etc/systemd/system/uwsgi.service
+sudo systemctl daemon-reload
 sudo systemctl enable uwsgi
 ```
 
@@ -341,19 +346,18 @@ user deploy;
 
 #### Nginx 가상서버 설정 파일 작성
 
-```
-sudo vi /etc/nginx/sites-available/mysite
+**`(Local)ec2_deploy_project/.config/nginx/mysite.conf`**
 
+```nginx
 server {
     listen 80;
-    server_name localhost;
+    server_name *.compute.amazonaws.com;
     charset utf-8;
     client_max_body_size 128M;
 
-
     location / {
-        uwsgi_pass    unix:///tmp/mysite.sock;
-        include       uwsgi_params;
+        uwsgi_pass  unix:///tmp/mysite.sock;
+        include     uwsgi_params;
     }
 }
 ```
@@ -361,7 +365,9 @@ server {
 #### 설정파일 심볼릭 링크 생성
 
 ```
-sudo ln -s /etc/nginx/sites-available/mysite /etc/nginx/sites-enabled/mysite
+# scp명령어로 파일을 서버에 전송한 후 실행
+sudo cp -f /srv/ec2_deploy_project/.config/nginx/mysite.conf /etc/nginx/sites-available/mysite.conf
+sudo ln -sf /etc/nginx/sites-available/mysite.conf /etc/nginx/sites-enabled/mysite.conf
 ```
 
 #### sites-enabled의 default파일 삭제
@@ -370,16 +376,13 @@ sudo ln -s /etc/nginx/sites-available/mysite /etc/nginx/sites-enabled/mysite
 sudo rm /etc/nginx/sites-enabled/default
 ```
 
-> nginx.conf파일에 어떤 폴더에 있는 설정을 가져와서 실행할 지 적혀있음
-
-
-#### uWSGI, Nginx재시작
+## uWSGI, Nginx재시작
 
 ```
 sudo systemctl restart uwsgi nginx
 ```
 
--
+---
 
 ### 오류 발생 시
 
@@ -405,14 +408,13 @@ cat /var/log/nginx/error.log
 ```
 cd /tmp
 ls -al
--rw-r--r--  1 nginx  nginx     6 Nov  8 06:58 mysite.pid
 srw-rw-rw-  1 nginx  nginx     0 Nov  8 06:58 mysite.sock
 
 nginx가 소유자가 아닐 경우, 
-sudo rm mysite.pid mysite.sock으로 삭제 후 서비스 재시작
+sudo rm mysite.*로 삭제 후 서비스 재시작
 ```
 
-## 서버 설정
+## 정적 파일 설정
 
 ### Media
 
@@ -422,7 +424,7 @@ sudo rm mysite.pid mysite.sock으로 삭제 후 서비스 재시작
 
 ```
 location /media/ {
-	alias /srv/app/media/;
+	alias /srv/ec2_deploy_project/.media/;
 }
 ```
 
@@ -438,31 +440,9 @@ location /media/ {
 
 ```
 location /static/ {
-	alias /srv/app/static_root/;
+	alias /srv/ec2_deploy_project/.static_root/;
 }
 ```
-
-### 데이터베이스
-
-> macOS에서는 `sudo -u postgres` 입력 불필요
-
-**유저생성**  
-`sudo -u postgres createuser -s -P <username>`
-
-**유저삭제**  
-`sudo -u postgres dropuser <username>`
-
-**삭제**  
-`sudo -u postgres dropdb <db name>`
-
-**생성**  
-`sudo -u postgres createdb <db name> owner=<owner name>`
-
--
-
-#### AWS Secutiriy Groups 80 Port추가
-
-Security Groups -> Inbound -> Edit -> HTTP
 
 ## S3 연결
 
@@ -476,7 +456,7 @@ pip install boto3
 
 ```
 >>> import boto3
->>> session = boto3.Session(profile_name='fc-6th')
+>>> session = boto3.Session
 >>> client = session.client('s3')
 >>> client.create_bucket(Bucket='fc-6th-test', CreateBucketConfiguration={'LocationConstraint': 'ap-northeast-2'})
 {'Location': 'http://fc-6th-test.s3.amazonaws.com/', 'ResponseMetadata': {'RequestId': '0B679A5EBF1FCF19', 'HostId': 'qLvVYj0n74HZKnA46m+ILCabPs71dt0GEqNFllrRguaBSbvQ2MpQ4aWhOT/PjHFzVo8nE1/H4cw=', 'HTTPStatusCode': 200, 'RetryAttempts': 0, 'HTTPHeaders': {'content-length': '0', 'location': 'http://fc-6th-test.s3.amazonaws.com/', 'date': 'Thu, 09 Mar 2017 01:41:17 GMT', 'x-amz-id-2': 'qLvVYj0n74HZKnA46m+ILCabPs71dt0GEqNFllrRguaBSbvQ2MpQ4aWhOT/PjHFzVo8nE1/H4cw=', 'x-amz-request-id': '0B679A5EBF1FCF19', 'server': 'AmazonS3'}}}
