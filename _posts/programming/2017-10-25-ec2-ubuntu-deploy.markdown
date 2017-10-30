@@ -8,7 +8,7 @@ AWS의 EC2 인스턴스를 생성해 직접 웹 서버와 게이트웨이를 설
 
 pyenv로 사용하는 파이썬 버전은 `3.6.3`
 가상환경 이름은 `fc-ec2-deploy`  
-프로젝트 폴더명은 `ec2_deploy_project`  
+프로젝트 경로는 `~/projects/deploy/ec2_deploy_project`  
 설정이 담긴 패키지명은 `config`
 를 사용한다.
 
@@ -206,11 +206,11 @@ cd mystie
 ./manage.py runserver 0:8080
 ```
 
-## 배포를 위한 설정
-
 ### EC2 보안그룹에 포트 추가
 
 `EC2` -> `네트워크 및 보안` -> `보안 그룹` -> `EC2-Deploy` -> `인바운드` -> `편집` -> `규칙 추가` -> `사용자 지정 TCP규칙` -> `8080`
+
+## 배포를 위한 설정
 
 ### Django ALLOWED_HOSTS 설정
 
@@ -220,7 +220,6 @@ ALLOWED_HOSTS = [
 	'.amazonaws.com',
 ]
 ```
-
 
 ## uWSGI 관련 설정
 
@@ -262,7 +261,7 @@ ex) uWSGI가 설치된 virtualenv이름이 `uwsgi-env`, Django가 설치된 virt
 
 #### uWSGI 사이트 파일 작성
 
-**`(Local)ec2_deploy_project/.config/uwsgi/mysite.ini`**
+**`(Local) ec2_deploy_project/.config/uwsgi/mysite.ini`**
 
 ```ini
 [uwsgi]
@@ -294,7 +293,7 @@ sudo /home/ubuntu/.pyenv/versions/uwsgi-env/bin/uwsgi -i /srv/ec2_deploy_project
 
 #### uWSGI 서비스 설정파일 작성
 
-**`(Local)ec2_deploy_project/.config/uwsgi/uwsgi.service`**
+**`(Local) ec2_deploy_project/.config/uwsgi/uwsgi.service`**
 
 ```ini
 [Unit]
@@ -322,7 +321,6 @@ sudo cp -f /srv/ec2_deploy_project/.config/uwsgi/uwsgi.service /etc/systemd/syst
 sudo systemctl daemon-reload
 sudo systemctl enable uwsgi
 ```
-
 
 ## Nginx 관련 설정
 
@@ -382,6 +380,10 @@ sudo rm /etc/nginx/sites-enabled/default
 sudo systemctl restart uwsgi nginx
 ```
 
+### EC2 보안그룹에 포트 추가
+
+`EC2` -> `네트워크 및 보안` -> `보안 그룹` -> `EC2-Deploy` -> `인바운드` -> `편집` -> `규칙 추가` -> `HTTP` -> `(자동으로 80번 포트 선택됨)`
+
 ---
 
 ### 오류 발생 시
@@ -416,15 +418,27 @@ sudo rm mysite.*로 삭제 후 서비스 재시작
 
 ## 정적 파일 설정
 
-### Media
-
-> 본인의 media폴더 위치를 확인
-
-`sudo vi /etc/nginx/sites-available/app`
+**`(Local) ec2_deploy_project/.config/nginx/mysite.conf`**
 
 ```
-location /media/ {
-	alias /srv/ec2_deploy_project/.media/;
+server {
+    listen 80;
+    server_name *.compute.amazonaws.com *.pikachu.kr;
+    charset utf-8;
+    client_max_body_size 128M;
+
+    location / {
+        uwsgi_pass  unix:///tmp/mysite.sock;
+        include     uwsgi_params;
+    }
+
+    location /static/ {
+        alias /srv/ec2_deploy_project/.static_root/;
+    }
+
+    location /media/ {
+        alias /srv/ec2_deploy_project/mysite/media/;
+    }
 }
 ```
 
@@ -432,33 +446,152 @@ location /media/ {
 `sudo chmod 755 media`로 `media`폴더의 권한을 변경, `media`폴더 하위 폴더 모두 삭제 후 다시 실행
 
 
-### Static
+## RDS
 
-> 본인의 static_root폴더 위치를 확인
+### 생성 및 보안 그룹 설정
 
-`sudo vi /etc/nginx/sites-available/app`
+RDS가 속하는 보안그룹의 인바운드에서 `5432`번 포트에 자신의 IP와 연결을 허용하고자 하는 `EC2`가 속하는 보안 그룹을 추가해준다
+
+### psql로 연결하고 싶을 때
 
 ```
-location /static/ {
-	alias /srv/ec2_deploy_project/.static_root/;
-}
+psql --host=<RDS Endpoint> --user=<username> --port=5432 <db name>
 ```
 
 ## S3 연결
 
+### S3 관련 권한을 IAM유저에 추가
+
+`서비스` -> `IAM` -> `Users` -> `EC2-User` -> `Permissions` -> `Add permissions` -> `Attach existing policies directly` -> `AmazonS3FullAccess` -> `Next` -> `Add permissions`
+
 ### boto3를 이용해서 S3 Bucket생성
 
-`boto3`
+**`Terminal`**
 
-```python
+```
 pip install boto3
-```
-
-```
+python
 >>> import boto3
->>> session = boto3.Session
+>>> session = boto3.Session()
 >>> client = session.client('s3')
 >>> client.create_bucket(Bucket='fc-6th-test', CreateBucketConfiguration={'LocationConstraint': 'ap-northeast-2'})
-{'Location': 'http://fc-6th-test.s3.amazonaws.com/', 'ResponseMetadata': {'RequestId': '0B679A5EBF1FCF19', 'HostId': 'qLvVYj0n74HZKnA46m+ILCabPs71dt0GEqNFllrRguaBSbvQ2MpQ4aWhOT/PjHFzVo8nE1/H4cw=', 'HTTPStatusCode': 200, 'RetryAttempts': 0, 'HTTPHeaders': {'content-length': '0', 'location': 'http://fc-6th-test.s3.amazonaws.com/', 'date': 'Thu, 09 Mar 2017 01:41:17 GMT', 'x-amz-id-2': 'qLvVYj0n74HZKnA46m+ILCabPs71dt0GEqNFllrRguaBSbvQ2MpQ4aWhOT/PjHFzVo8nE1/H4cw=', 'x-amz-request-id': '0B679A5EBF1FCF19', 'server': 'AmazonS3'}}}
+{'Location': 'http://fc-6th-test.s3.amazonaws.com/', {'ResponseMetadata': {'RequestId': '23A44CAD8A1360ED', 'HostId': 'VRGWEULfb3AkF+t71d00DT6Hug8ssDJvO1/R6QDdESXEQMMbgsrQARaswA1ybwZr8VPOr4wfX6Y=', 'HTTPStatusCode': 200, 'HTTPHeaders': {'x-amz-id-2': 'VRGWEULfb3AkF+t71d00DT6Hug8ssDJvO1/R6QDdESXEQMMbgsrQARaswA1ybwZr8VPOr4wfX6Y=', 'x-amz-request-id': '23A44CAD8A1360ED', 'date': 'Sun, 29 Oct 2017 17:04:39 GMT', 'location': 'http://fc-6th-test.s3.amazonaws.com/', 'content-length': '0', 'server': 'AmazonS3'}, 'RetryAttempts': 0}, 'Location': 'http://fc-6th-test.s3.amazonaws.com/'}
 >>> 
+```
+
+### AWS관련 설정 추가
+
+**`ec2_deploy_project/.config_secret/settings_common.json`**
+
+```json
+{
+  "aws": {
+    "access_key_id": "<AWS Access key id>",
+    "secret_access_key": "<AWS Secret access key>",
+    "s3_bucket_name": "<S3 Bucket name>",
+    "s3_region_name": "ap-northeast-2"
+  }
+}
+```
+
+### [django-storages](https://django-storages.readthedocs.io/en/latest/) 패키지 설치
+
+**`Terminal`**
+
+```
+pip install django-storages
+```
+
+### settings.py에 설정 추가
+
+**`config/settings.py`**
+
+```python
+# AWS
+AWS_ACCESS_KEY_ID = config_secret['aws']['access_key_id']
+AWS_SECRET_ACCESS_KEY = config_secret['aws']['secret_access_key']
+AWS_STORAGE_BUCKET_NAME = config_secret['aws']['s3_bucket_name']
+AWS_S3_REGION_NAME = config_secret['aws']['s3_region_name']
+AWS_S3_HOST = 's3.ap-northeast-2.amazonaws.com'
+S3_USE_SIGV4 = True
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
+
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    STATIC_DIR,
+]
+STATIC_ROOT = os.path.join(ROOT_DIR, '.static_root')
+STATICFILES_LOCATION = 'static'
+STATICFILES_STORAGE = 'config.storages.StaticStorage'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+MEDIAFILES_LOCATION = 'media'
+DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
+```
+
+### static태그를 사용해 정적 파일 불러오기
+
+```django
+{% raw %}<img src="{% static 'pby59.jpg' %}" alt="" width="50%">{% endraw %}
+```
+
+### member application추가 및 AUTH_USER_MODEL재정의, img_profile필드 추가
+
+**`Terminal`**
+
+```
+./manage.py startapp member
+```
+
+**`member/models.py`**
+
+```python
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+
+class User(AbstractUser):
+    img_profile = models.ImageField(upload_to='user', blank=True)
+```
+
+**`config/settings.py`**
+
+```python
+AUTH_USER_MODEL = 'member.User'
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'storages',
+
+    'member',
+]
+```
+
+### 기존 데이터베이스 삭제 후 새로 마이그레이션 생성 및 적용
+
+`AUTH_USER_MODEL`을 재정의 했으므로 데이터베이스를 전체 삭제 후 다시 마이그레이션을 생성 및 적용시켜준다
+
+**`Terminal`**
+
+```
+psql psql --host=<RDS endpoint> --user=<RDS username> --port=5432 postgres
+
+postgres=> DROP DATABASE deploy;
+DROP DATABASE
+postgres=> CREATE DATABASE deploy OWNER <username>;
+CREATE DATABASE
+postgres=> \q
+
+./manage.py makemigrations
+./manage.py migrate
 ```

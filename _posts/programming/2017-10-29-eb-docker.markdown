@@ -1,0 +1,86 @@
+---
+layout: post
+title:  "AWS ElasticBeanstalk의 Docker플랫폼을 사용한 Django 배포"
+categories: ['Django', 'AWS', 'Docker']
+---
+
+## settings모듈 분할
+
+```
+mysite/
+  settings/
+    __init__.py
+    base.py
+    local.py
+    debug.py
+```
+
+## Docker설치
+
+[Get Docker CE for Ubuntu](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#uninstall-old-versions)  
+[Install Docker for Mac](https://docs.docker.com/docker-for-mac/install/#download-docker-for-mac)
+
+[초보를 위한 도커 안내서 (subicura)](https://subicura.com/2017/01/19/docker-guide-for-beginners-1.html)
+
+### ubuntu:16.04 컨테이너 실행
+
+```shell
+docker run --rm -it ubuntu:16.04 /bin/bash
+```
+
+## Dockerfile_base작성
+
+```docker
+FROM        ubuntu:16.04
+MAINTAINER  dev@azelf.com
+
+RUN         apt-get -y update
+RUN         apt-get install -y python-pip
+RUN         apt-get install -y git vim
+
+# pyenv
+RUN         apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils
+RUN         curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+ENV         PATH /root/.pyenv/bin:$PATH
+RUN         pyenv install 3.6.3
+
+# zsh
+RUN         apt-get -y install zsh
+RUN         wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
+RUN         chsh -s /usr/bin/zsh
+
+# pyenv settings
+RUN         echo 'export PATH="/root/.pyenv/bin:$PATH"' >> ~/.zshrc
+RUN         echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+RUN         echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+
+# pyenv virtualenv
+RUN         pyenv virtualenv 3.6.3 app
+
+# uWGSI install
+RUN         /root/.pyenv/versions/app/bin/pip install uwsgi
+
+# Nginx install
+RUN         apt-get -y install nginx
+
+# supervisor install
+RUN         apt-get -y install supervisor
+```
+
+### Dockerfile_base를 사용해서 이미지 생성
+
+```
+docker build -t base . -f Dockerfile_base
+```
+
+### 이후 작업은 Dockerfile에 작성
+
+```docker
+FROM        base
+MAINTAINER  dev@azelf.com
+
+ENV         LANG C.UTF-8
+COPY        requirements.txt /srv/requirements.txt
+RUN         /root/.pyenv/versions/app/bin/pip install -r /srv/requirements.txt
+```
