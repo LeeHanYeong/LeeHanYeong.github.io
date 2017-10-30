@@ -460,6 +460,44 @@ psql --host=<RDS Endpoint> --user=<username> --port=5432 <db name>
 
 ## S3 연결
 
+### boto3와 django-storages의 역할
+
+**`django-storages`를 사용하지 않을 경우**
+
+```python
+# S3의 API를 사용해서 실제 파일 스토리지의 역할을 할 수 있는 클래스를 직접 정의해야 함
+from django.core.files.storage import Storage
+
+
+class S3Storage(Storage):
+    def delete(file_name):
+        url = f'https://s3.amazonaws.com/{file_name}'
+        response = requests.delete(url, credentials=...)
+        return response == 204:
+    
+    def exists(file_name):
+        ....
+        ....
+```
+
+**`boto3`의 역할**
+
+```python
+# django-storages라이브러리에서 S3 API와 통신할 때 사용
+# 직접 구현한다면 requests라이브러리를 사용해야 함 
+#  (작업할 부분이 많아지며, AWS의 API가 업데이트 될 경우 항상 수정해야 함)
+
+def save(file):
+    boto3.upload(bucket_name, file)
+    
+    
+def save(file):
+    response = requests.post(url, file)
+    if response.status == 200:
+      return File(respose.content)
+    raise ValueError(..)
+```
+
 ### S3 관련 권한을 IAM유저에 추가
 
 `서비스` -> `IAM` -> `Users` -> `EC2-User` -> `Permissions` -> `Add permissions` -> `Attach existing policies directly` -> `AmazonS3FullAccess` -> `Next` -> `Add permissions`
@@ -502,6 +540,23 @@ python
 pip install django-storages
 ```
 
+### Custom StorageClass정의
+
+**`config/storages.py`**
+
+```python
+from django.conf import settings
+from storages.backends.s3boto3 import S3Boto3Storage
+
+
+class StaticStorage(S3Boto3Storage):
+    location = settings.STATICFILES_LOCATION
+
+
+class MediaStorage(S3Boto3Storage):
+    location = settings.MEDIAFILES_LOCATION
+```
+
 ### settings.py에 설정 추가
 
 **`config/settings.py`**
@@ -511,9 +566,6 @@ pip install django-storages
 AWS_ACCESS_KEY_ID = config_secret['aws']['access_key_id']
 AWS_SECRET_ACCESS_KEY = config_secret['aws']['secret_access_key']
 AWS_STORAGE_BUCKET_NAME = config_secret['aws']['s3_bucket_name']
-AWS_S3_REGION_NAME = config_secret['aws']['s3_region_name']
-AWS_S3_HOST = 's3.ap-northeast-2.amazonaws.com'
-S3_USE_SIGV4 = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
