@@ -83,4 +83,75 @@ MAINTAINER  dev@azelf.com
 ENV         LANG C.UTF-8
 COPY        requirements.txt /srv/requirements.txt
 RUN         /root/.pyenv/versions/app/bin/pip install -r /srv/requirements.txt
+
+COPY        . /srv/app
+RUN         mkdir -p /var/log/uwsgi/mysite
+
+COPY        .config/nginx/app.conf /etc/nginx/sites-available/
+RUN         rm -rf /etc/nginx/sites-enabled/*
+RUN         ln -sf /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/app.conf
+
+WORKDIR     /srv/app/mysite
+
+RUN         /root/.pyenv/versions/app/bin/python manage.py migrate --noinput
+RUN         /root/.pyenv/versions/app/bin/python manage.py collectstatic --noinput
+
+EXPOSE      80 8012
 ```
+
+## Docker 명령어들
+
+**`현재 위치를 기준으로 Dockerfile을 이용해 새 이미지 생성`**
+
+```
+docker build . -t [이미지이름(태그명)]
+```
+
+**`현재 위치를 기준으로 특정 파일을 이용해 새 이미지 생성`**
+
+```
+docker build . -t [이미지태그명] -f [파일명]
+```
+
+**`이미지를 컨테이너로 실행하며 셸로 이동`**
+
+```
+docker run --rm -it [이미지명] /bin/zsh
+```
+
+**`이미지로 컨테이너를 실행하며 포트 연결`**
+
+```
+docker run --rm -it -p <외부포트>:<컨테이너포트> <이미지명> <실행할 명령>
+```
+
+**`실행중인 컨테이너에 명령 실행`**
+
+```
+docker exec [container id] [실행할 명령]
+```
+
+**`실행중인 컨테이너에 접속 후 셸 실행하고 싶을 경우`**
+
+```
+docker exec -it [container id] /bin/zsh
+```
+
+**`Delete all docker containers`**  
+
+```
+docker rm $(docker ps -a -q)
+```
+
+**`Delete all docker images`**
+
+```
+docker rmi $(docker images -q)
+```
+
+**`Delete name docker images force`**
+
+```
+docker rmi -f $(docker images --filter "dangling=true" -q)
+```
+
