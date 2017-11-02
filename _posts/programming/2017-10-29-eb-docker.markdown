@@ -66,6 +66,12 @@ RUN         apt-get -y install nginx
 
 # supervisor install
 RUN         apt-get -y install supervisor
+
+# pip
+ENV         LANG C.UTF-8
+COPY        requirements.txt /srv/requirements.txt
+RUN         /root/.pyenv/versions/app/bin/pip install -r \
+            /srv/requirements.txt
 ```
 
 ### Dockerfile_base를 사용해서 이미지 생성
@@ -74,7 +80,7 @@ RUN         apt-get -y install supervisor
 docker build -t base . -f Dockerfile_base
 ```
 
-### 이후 작업은 Dockerfile에 작성
+## 이후 작업은 Dockerfile에 작성
 
 ```docker
 FROM        base
@@ -155,3 +161,43 @@ docker rmi $(docker images -q)
 docker rmi -f $(docker images --filter "dangling=true" -q)
 ```
 
+
+## Dockerfile에 uWSGI, Nginx관련 설정 추가 및 실행 확인
+
+**`Dockerfile`**
+
+```docker
+FROM        base
+MAINTAINER  dev@azelf.com
+
+ENV         LANG C.UTF-8
+
+# 파일 복사 및 requirements설치
+COPY        . /srv/app
+RUN         /root/.pyenv/versions/app/bin/pip install -r \
+            /srv/app/requirements.txt
+
+# pyenv local설정
+WORKDIR     /srv/app
+RUN         pyenv local app
+
+# Nginx
+RUN         cp /srv/app/.config/nginx/app.conf \
+                /etc/nginx/sites-available/
+RUN         rm -rf /etc/nginx/sites-enabled/*
+RUN         ln -sf /etc/nginx/sites-available/app.conf \
+                    /etc/nginx/sites-enabled/app.conf
+
+# uWSGI
+RUN         mkdir -p /var/log/uwsgi/app
+```
+
+**`Terminal`**
+
+```
+docker run --rm -it -p 8012:80 eb /bin/zsh
+nginx
+/root/.pyenv/versions/app/bin/uwsgi -i /srv/app/.config/uwsgi/app.ini
+```
+
+이후 로컬 브라우저에서 `localhost:8012`로 접속이 되며, 해당 로그가 컨테이너 내부의 `/var/log/uwsgi/app/<date>.log`파일에 쌓이는지 확인
