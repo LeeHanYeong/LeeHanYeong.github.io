@@ -201,3 +201,40 @@ nginx
 ```
 
 이후 로컬 브라우저에서 `localhost:8012`로 접속이 되며, 해당 로그가 컨테이너 내부의 `/var/log/uwsgi/app/<date>.log`파일에 쌓이는지 확인
+
+
+## DockerHub
+
+`DockerHub`에 저장소를 만들고 로컬 터미널에서 로그인을 시킨다.
+
+이후 `docker pull/push`시 해당 인증을 사용한다.
+
+**`Terminal`**
+
+```
+docker login
+
+# base이미지에 새 태그명 azelf/base를 붙인다
+docker tag base azelf/base
+
+# azelf/base저장소에 해당 이미지를 push
+docker push azelf/base
+```
+
+## EB CLI
+
+**애플리케이션 생성**  
+```eb init```
+
+**환경 생성**  
+```eb create```
+
+**배포**  
+```eb deploy```
+
+**빌드 관련 오류 보기**
+
+```
+eb ssh
+cat /var/log/eb-activity.log
+```
