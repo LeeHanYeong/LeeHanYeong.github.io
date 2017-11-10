@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "클린 코드를 위한 테스트 주도 개발"
-categories: ['tdd']
+categories: ['TDD']
 ---
 
 이 포스팅에서는 클린 코드를 위한 테스트 주도 개발 [e-book](http://chimera.labs.oreilly.com/books/1234000000754/index.html){:target="_blank"}을 진행하며 책과 최신버전에서의 차이점이나, 설명이 생략되어 있는 부분들에 대해 기술한다.  

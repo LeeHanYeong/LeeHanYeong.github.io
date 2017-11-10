@@ -1,0 +1,133 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+@import "minima";
+
+blockquote {
+  letter-spacing: 0;
+}
+p {
+  margin-bottom: 10px;
+}
+p + .highlighter-rouge {
+  margin-top: -11px;
+}
+h1, h2, h3, h4, h5, h6 {
+  padding-top: 15px;
+}
+a, a:visited {
+  color: #2C3E50;
+}
+a:hover {
+  text-decoration: none;
+}
+pre {
+  tab-size: 2;
+  background-color: transparent;
+}
+code {
+  font-family: 'Inconsolata', monospace;
+  background-color: transparent;
+  color: #f8f8f2;
+}
+code.highlighter-rouge {
+  background-color: #272822;
+  padding: 3px 6px;
+}
+
+// Theme customize
+.site-header {
+  border-top: 0;
+  border-bottom: 0;
+}
+.wrapper {
+  max-width: calc(1200px - (30px * 2))
+}
+.post-list {
+  .post-link-heading {
+    padding-top: 0;
+    margin-bottom: 0;
+  }
+  > li {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    
+    .post-meta {
+      font-size: 10px;
+    }
+  }
+}
+
+// Bootstrap customize
+@media (min-width: 576px) and (max-width: 1200px) {
+  .container-nav {
+    max-width: 100%;
+  }
+}
+.navbar-nav .nav-item + .nav-item {
+  margin-left: 0;
+}
+.card {
+  h1, h2, h3, h4, h5, h6,
+  .h1, .h2, .h3, .h4, .h5, .h6 {
+    margin-bottom: 0.5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    color: inherit;
+  }
+
+  h1, .h1 {
+    font-size: 3rem;
+  }
+  
+  h2, .h2 {
+    font-size: 2.5rem;
+  }
+  
+  h3, .h3 {
+    font-size: 2rem;
+  }
+  
+  h4, .h4 {
+    font-size: 1.40625rem;
+  }
+  
+  h5, .h5 {
+    font-size: 1.171875rem;
+  }
+  
+  h6, .h6 {
+    font-size: 0.9375rem;
+  }
+
+}
+
+// Additional elements
+.content-container {
+  padding-top: 30px;
+}
+.home-image-container {
+  position: relative;
+  
+  .home-image-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 100;
+  }
+  .home-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh;
+    background-size: cover;
+    background-position: center;
+  }  
+}

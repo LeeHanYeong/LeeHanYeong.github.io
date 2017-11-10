@@ -1,27 +1,44 @@
----
-layout: default
----
-
-<div class="home">
-
-  <h1 class="page-heading">Posts</h1>
-
-  {{ content }}
-
-  <ul class="post-list">
-    {% assign post_list = site.posts | where_exp:"post", "post.path contains '_posts/programming/'" %}
-    {% for post in post_list %}
-      <li>
-        {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
-        <span class="post-meta">{{ post.date | date: date_format }}</span>
-
-        <h2>
-          <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
-
-</div>
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+  {% include head.html %}
+  <body>
+    {% include header.html %}
+    <div class="container content-container container-nav">
+      <ul class="post-list">
+        {% assign post_list = site.posts | where_exp:"post", "post.path contains '_posts/programming/'" %}
+        {% for post in post_list %}
+          <li>
+            {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+            <span class="post-meta">{{ post.date | date: date_format }}</span>
+            <h2 class="post-link-heading">
+              <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+            </h2>
+            {% for category in post.categories %}
+            <span class="badge 
+            {% if category == 'Django' %}
+              badge-success
+            {% elsif category == 'AWS' %}
+              badge-warning
+            {% elsif category == 'Docker' %}
+              badge-info
+            {% elsif category == 'Python' %}
+              badge-primary
+            {% else %}
+              badge-dark
+            {% endif %}">{{ category }}</span>
+            {% endfor %}
+            
+            
+          </li>
+        {% endfor %}
+      </ul>
+      
+      <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>  
+    </div>
+    {% include footer.html %}
+    <script id="dsq-count-scr" src="//{{ site.disqus.shortname }}.disqus.com/count.js" async></script>
+    <script src="{{ "/assets/js/jquery.min.js" | relative_url }}"></script>
+    <script src="{{ "/assets/js/popper.js" | relative_url }}"></script>
+    <script src="{{ "/assets/js/bootstrap.min.js" | relative_url }}"></script>
+  </body>
+</html>

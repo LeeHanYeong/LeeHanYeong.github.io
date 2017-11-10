@@ -1,6 +1,33 @@
 <header class="site-header" role="banner">
-
-  <div class="wrapper">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container container-nav">
+      <a class="navbar-brand" href="/">lhy's blog</a>
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbar-header" aria-controls="navbar-header" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="navbar-collapse collapse" id="navbar-header" style="">
+        <div class="mr-auto"></div>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Programming</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Lecture</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+        </ul>
+        <!-- <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search">
+          <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+        </form> -->
+      </div>
+    </div>
+  </nav>
+  
+  <!-- <div class="wrapper">
     {% assign default_paths = site.pages | map: "path" %}
     {% assign page_paths = site.header_pages | default: default_paths %}
     <a class="site-title" href="{{ "/" | relative_url }}">{{ site.title | escape }}</a>
@@ -28,5 +55,5 @@
         </div>
       </nav>
     {% endif %}
-  </div>
+  </div> -->
 </header>
