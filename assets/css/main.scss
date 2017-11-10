@@ -16,7 +16,7 @@ p + .highlighter-rouge {
 h1, h2, h3, h4, h5, h6 {
   padding-top: 15px;
 }
-a, a:visited {
+a {
   color: #2C3E50;
 }
 a:hover {
@@ -37,6 +37,15 @@ code.highlighter-rouge {
 }
 
 // Theme customize
+.social-media-list.horizontal {
+  li {
+    display: inline-block;
+  }
+}
+.svg-icon.large {
+  width: 30px;
+  height: 30px;
+}
 .site-header {
   border-top: 0;
   border-bottom: 0;
@@ -59,8 +68,20 @@ code.highlighter-rouge {
     }
   }
 }
+#category-list-group {
+  margin-bottom: 50px;
+}
 
 // Bootstrap customize
+.badge-warning[href]:focus, .badge-warning[href]:hover {
+  color: white;
+}
+.card-body {
+  padding: 0.7rem;
+}
+ul.list-group {
+  margin-left: 0;
+}
 @media (min-width: 576px) and (max-width: 1200px) {
   .container-nav {
     max-width: 100%;
@@ -106,8 +127,15 @@ code.highlighter-rouge {
 }
 
 // Additional elements
+.home-name {
+  margin-bottom: 0;
+}
+img.img-home {
+  width: 10vw;
+}
 .content-container {
   padding-top: 30px;
+  padding-bottom: 30px;
 }
 .home-image-container {
   position: relative;

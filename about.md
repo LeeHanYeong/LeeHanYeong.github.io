@@ -1,7 +1,5 @@
 ---
-layout: page
+layout: about
 title: About
 permalink: /about/
 ---
-
-I'm Lee HanYeong, programmer using Django and Python.

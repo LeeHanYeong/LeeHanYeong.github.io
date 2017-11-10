@@ -1,0 +1,21 @@
+<div style="margin-bottom: 30px;">
+  <img src="{{ "/assets/images/azelf.jpg" | relative_url }}" alt="" class="img-home rounded-circle">
+  <h3 class="home-name">LeeHanYeong</h3>
+  <p>Django programmer</p>
+  <ul class="social-media-list horizontal">
+    {% if site.github_username %}
+    <li>
+      {% include icon-github.html username=site.github_username large=true %}
+    </li>
+    {% endif %}
+    
+    {% if site.instagram_username %}
+    <li>
+      {% include icon-instagram.html username=site.instagram_username large=true %}
+    </li>
+    {% endif %}
+  </ul>
+  <div>
+    <a href="mailto:dev@azelf.com" class="btn btn-primary btn-sm">dev@azelf.com</a>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div style="margin-bottom: 20px;">
+  <button category="all" style="margin-right: 10px;" class="btn-category btn-primary btn-sm">All posts</button>
+  {% for category in site.categories %}
+  <button category="{{ category | first }}" class="btn-category btn-outline-primary btn-sm">
+    <span>{{ category | first }}</span>
+  </button>
+  {% endfor %}
+</div>
+
+<script>
+  $('.btn-category').click(function (e) {
+    var category = $(this).attr('category');
+    console.log(category);
+    
+    $('.btn-category').each(function (index) {
+      if($(this).attr('category').indexOf(category) !== -1) {
+        $(this).addClass('btn-primary');
+        $(this).removeClass('btn-outline-primary');
+      } else {
+        $(this).addClass('btn-outline-primary');
+        $(this).removeClass('btn-primary');  
+      }
+    });
+    $('.post-list-item').each(function (index) {
+      if(category == 'all') {
+        $(this).css('display', 'block');
+      } else {
+        var curPostCategories = $(this).attr('categories');
+        if(curPostCategories.indexOf(category) !== -1) {
+          $(this).css('display', 'block');
+        } else {
+          $(this).css('display', 'none');
+        }  
+      }
+      
+    });
+  });
+  
+</script>

@@ -1,7 +1,29 @@
 ---
-layout: page
+layout: default
 ---
+{% assign categories = site.categories | sort %}
+<h1 id="category-list" >Categories</h1>
+<ul id="category-list-group" class="list-group">
+  {% for category in categories %}
+    <a href="#{{ category | first }}" class="list-group-item">
+      <span>{{ category | first }}</span>
+    </a>
+  {% endfor %}
+</ul>
 
-{% for category in site.categories %}
-  <div>{{ category | first }}</div>
+{% for category in categories %}
+  {% assign category_title = category | first %}
+  <a href="#{{ category | first }}">
+    <h2 id="{{ category | first }}">{{ category | first }}</h2>
+  </a>
+  <a href="#category-list" class="btn btn-primary float-right">Top</a>
+  <ul class="post-list">
+    {% assign posts = site.categories[category_title] %}
+    {% for post in posts %}
+      {% unless post.path contains '_posts/lecture/' %}
+        {% include post-list-item.html post=post view_tag=false %}
+      {% endunless %}
+    {% endfor %}
+  </ul>
+  <div style="margin-bottom: 60px;"></div>
 {% endfor %}

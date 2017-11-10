@@ -1,0 +1,24 @@
+<li categories="{% for category in post.categories %}category-{{ category }} {% endfor %}" class="post-list-item">
+  {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+  {% assign post = include.post %}
+  <span class="post-meta">{{ post.date | date: date_format }}</span>
+  <h2 class="post-link-heading">
+    <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+  </h2>
+  {% if include.view_tag %}
+    {% for category in post.categories %}
+    <a href="/categories/#{{ category }}" class="badge 
+    {% if category == 'Django' %}
+      badge-success
+    {% elsif category == 'AWS' %}
+      badge-warning
+    {% elsif category == 'Docker' %}
+      badge-info
+    {% elsif category == 'Python' %}
+      badge-primary
+    {% else %}
+      badge-dark
+    {% endif %}">{{ category }}</a>
+    {% endfor %}
+  {% endif %}
+</li>

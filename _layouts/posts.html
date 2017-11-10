@@ -1,0 +1,17 @@
+---
+layout: page
+title: About
+permalink: /posts/
+---
+<div>
+  {% include post-categories.html %}
+</div>
+<ul class="post-list">
+  <!-- {% assign post_list = site.posts | where_exp:"post", "post.path contains '_posts/programming/'" %} -->
+  {% assign post_list = site.posts %}
+  {% for post in post_list %}
+    {% unless post.path contains '_posts/lecture/' %}
+      {% include post-list-item.html post=post view_tag=true %}
+    {% endunless %}
+  {% endfor %}
+</ul>
