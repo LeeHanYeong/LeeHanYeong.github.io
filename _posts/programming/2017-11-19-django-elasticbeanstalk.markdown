@@ -92,7 +92,7 @@ git commit -m 'First commit'
 
 배포가 완료되었을 때 확인할 수 있는 기본 뷰와, Elastic Beanstalk에서 제공하는 도메인을 허용하는 설정을 추가한다.
 
-**`~/projects/eb-django-project/config/views.py`**
+**`~/projects/eb-django-project/eb-django/config/views.py`**
 ```python
 from django.http import HttpResponse
 from django.views import View
@@ -103,7 +103,7 @@ class IndexView(View):
         return HttpResponse('<h1>EB Django Project</h1>')
 ```
 
-**`~/projects/eb-django-project/config/urls.py`**
+**`~/projects/eb-django-project/eb-django/config/urls.py`**
 ```python
 from django.conf.urls import url
 from django.contrib import admin
@@ -116,7 +116,7 @@ urlpatterns = [
 ]
 ```
 
-**`~/projects/eb-django-project/config/settings.py`**
+**`~/projects/eb-django-project/eb-django/config/settings.py`**
 ```python
 ...
 ALLOWED_HOSTS = [
@@ -176,7 +176,7 @@ AWS 회원가입 과정은 생략한다.
 **`Terminal`**
 ```shell
 # 프로젝트 폴더로 이동해 가상환경에 awscli패키지를 설치한다
-cd ~/projects/eb-django/project/
+cd ~/projects/eb-django-project/
 pip install awscli
 
 # 로그인 정보를 저장하고 기본 지역과 출력 포맷을 설정한다
@@ -194,7 +194,7 @@ aws configure
 **`Terminal`**
 ```shell
 # 프로젝트 폴더로 이동해 가상환경에 awsebcli패키지를 설치한다
-cd ~/projects/eb-django/project/
+cd ~/projects/eb-django-project/
 pip install awsebcli
 ```
 
