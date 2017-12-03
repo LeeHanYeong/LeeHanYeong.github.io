@@ -45,6 +45,12 @@ defaults:
       permalink: "mac/:title"
   -
     scope:
+      path: "_posts/teach"
+      type: "posts"
+    values:
+      permalink: "lecture/:title"
+  -
+    scope:
       path: "_posts/lecture/django/instagram"
       type: "posts"
     values:
