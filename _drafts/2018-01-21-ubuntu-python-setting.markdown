@@ -1,0 +1,147 @@
+---
+layout: post
+title:  "Ubuntu16.04에서"
+categories: ['Django', 'Python']
+---
+
+**참고문서**
+
+- [CustomUserManager](https://docs.djangoproject.com/ko/1.11/topics/auth/customizing/#django.contrib.auth.models.CustomUserManager)
+- [AuthCustomizing full example](https://docs.djangoproject.com/ko/1.11/topics/auth/customizing/#a-full-example)
+
+---
+
+`Post`삭제 기능
+
+### post delete를 위한 view, url구현
+
+**`post/views.py`**
+
+```python
+
+```
+
+**`Terminal`**
+
+```shell
+cd ~/projects/instagram-project/instagram/
+./manage.py makemigrations
+./manage.py migrate
+```
+
+### post like 토글기능 view, url구현
+
+**`post/views.py`**
+
+```python
+# POST요청에 대해 커스터마이징한 login_required를 사용한다
+@login_required
+def post_like_toggle(request, post_pk):
+    # GET파라미터로 전달된 이동할 URL
+    next_path = request.GET.get('next')
+    # post_pk에 해당하는 Post객체
+    post = get_object_or_404(Post, pk=post_pk)
+    # 요청한 사용자
+    user = request.user
+
+    # 사용자의 like_posts목록에서 like_toggle할 Post가 있는지 확인
+    filtered_like_posts = user.like_posts.filter(pk=post.pk)
+    # 존재할경우, like_posts목록에서 해당 Post를 삭제
+    if filtered_like_posts.exists():
+        user.like_posts.remove(post)
+    # 없을 경우, like_posts목록에 해당 Post를 추가
+    else:
+        user.like_posts.add(post)
+
+    # 이동할 path가 존재할 경우 해당 위치로, 없을 경우 Post상세페이지로 이동
+    if next_path:
+        return redirect(next_path)
+    return redirect('post:post_detail', post_pk=post_pk)
+```
+
+**`post/urls.py`**
+
+```python
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    # Post
+    url(r'^$', views.post_list, name='post_list'),
+    url(r'^create/$', views.post_create, name='post_create'),
+    url(r'^(?P<post_pk>\d+)/$', views.post_detail, name='post_detail'),
+    url(r'^(?P<post_pk>\d+)/like-toggle/$', views.post_like_toggle, name='post_like_toggle'),
+
+    # Comment
+    url(r'^(?P<post_pk>\d+)/comment/create/$', views.comment_create, name='comment_create'),
+]
+```
+
+### template에서 해당 form구현
+
+**`templates/include/post.html`**
+
+```django
+{% raw %}<div class="panel-body">
+	<div class="btn-container">
+		<form
+			action="{% url 'post:post_like_toggle' post_pk=post.pk %}?next=
+				{% if post_type == 'list' %}
+					{% url 'post:post_list' %}#post-{{ post.pk }}
+				{% elif post_type == 'detail' %}
+					{% url 'post:post_detail' post_pk=post.pk %}
+				{% endif %}"
+			method="POST"
+			class="form-inline">
+			{% csrf_token %}
+			<button class="btn btn-default btn-post-toggle" aria-label="Like button">
+			  <span
+				  class="glyphicon
+				    {% if post in user.like_posts.all %}
+				      glyphicon-heart
+						{% else %}
+							glyphicon-heart-empty
+						{% endif %}"
+				  aria-hidden="true"></span>
+			</button>
+		</form>
+		<a class="btn btn-default btn-post-toggle"
+		   onclick="document.getElementById('{{ comment_form.content.id_for_label }}').focus()">
+			<span class="glyphicon glyphicon-pencil"></span>
+		</a>
+	</div>
+	{% with like_count=post.like_users.count %}
+		{% if like_count %}
+		<p class="like-count">
+			{% if like_count < 10 %}
+				<b>
+				{% for user in post.like_users.all %}
+					{{ user.username }}{% if not forloop.last %}, {% endif %}
+				{% endfor %}
+				</b>
+				님이 좋아합니다
+			{% else %}
+				<b>좋아요 {{ user.like_posts.count }}개</b>
+			{% endif %}
+		</p>
+		{% endif %}
+	{% endwith %}
+
+	{% if post.comments.exists %}
+	<ul class="comment-list">
+		{% for comment in post.comments.all %}
+		<li class="comment">
+			<span class="comment-author">{{ comment.author }}</span>
+			<span class="comment-content">{{ comment.content }}</span>
+		</li>
+		{% endfor %}
+	</ul>
+  ...{% endraw %}
+```
+
+
+
+<center><b>현재까지 결과</b></center>
+
+![PostLike]({{ site.url }}/images/lecture/django/instagram/post_like.png)

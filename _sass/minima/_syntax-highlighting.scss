@@ -5,6 +5,9 @@
   background: #fff;
   @extend %vertical-rhythm;
 
+  a {
+    color: #9dc7ff;
+  }
   .highlighter-rouge & {
     background: #e8e8e8;
   }
