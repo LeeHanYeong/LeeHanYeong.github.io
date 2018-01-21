@@ -1,8 +1,9 @@
 ---
 layout: post
 title:  "pyenv와 virtualenv를 사용한 파이썬 개발환경 구성"
-categories: ['Python', 'PyCharm']
+categories: ['Python']
 ---
+
 파이썬으로 프로젝트를 진행한다면 각 프로젝트별로 파이썬 버전과 가상환경을 분리하여 사용할 것을 추천합니다.  
 이 포스팅은 파이썬 버전과 가상환경 분리에 `yyuu`의 `pyenv`, `pyenv-virtualenv`라이브러리를 사용하며, `macOS Sierra`또는 `Ubuntu linux(16.04)`환경을 기준으로 설명합니다.
 
@@ -292,3 +293,5 @@ setuptools 28.8.0
 지금까지 `pyenv`와 `pyenv-virtualenv`를 사용해 파이썬 버전과 가상환경을 분리해 보았습니다.
 
 가상환경은 아주 작은 프로젝트 단위라도 구분해서 사용하시는 것을 추천드리며, 설치 방법 외의 자세한 내용은 [pyenv 공식 사이트](https://github.com/pyenv/pyenv)를 참조하세요.
+
+생성한 가상환경을 이용해 Pycharm에서 Django프로젝트를 설정하는 방법은 [PyCharm과 pyenv를 사용한 Django 개발 환경 설정](/pyenv-python-development-environment-setting)에서 이어서 포스팅합니다.
