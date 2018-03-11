@@ -19,7 +19,7 @@ PyCharm에서 pyenv의 가상환경을 사용한 Django 개발 환경을 설정�
   sample-project/      <- 프로젝트 전체 컨테이너 폴더, sample-env라는 가상환경을 사용
 ```
 
-프로젝트 컨테이너 폴더는 `~/projects/sample-project`이며, Django프로젝트 폴더의 이름은 `django`, Django프로젝트의 설정 패키지명은 `config`를 사용한다. 여기서 설정하는 프로젝트 구조는 튜토리얼 등에서 사용하는 구조보다 한 단계를 더 가지며, Django코드와 프로젝트 설정파일들을 분리할 수 있도록 도와줍니다.
+프로젝트 컨테이너 폴더는 `~/projects/sample-project`이며, Django프로젝트 폴더의 이름은 `app`, Django프로젝트의 설정 패키지명은 `config`를 사용한다. 여기서 설정하는 프로젝트 구조는 튜토리얼 등에서 사용하는 구조보다 한 단계를 더 가지며, Django코드와 프로젝트 설정파일들을 분리할 수 있도록 도와줍니다.
 
 구성 완료 후에는 아래와 같은 구조를 가지게 됩니다.
 
@@ -28,7 +28,7 @@ PyCharm에서 pyenv의 가상환경을 사용한 Django 개발 환경을 설정�
   sample-project/      <- 프로젝트 전체 컨테이너 폴더, sample-env라는 가상환경을 사용
     .git               <- 로컬 Git 폴더
     .gitignore
-    django/            <- Django프로젝트 폴더
+    app/               <- Django프로젝트 폴더
       config/          <- Django프로젝트의 설정 패키지. settings, urls, wsgi모듈을 포함
         __init__.py
         settings.py
@@ -54,8 +54,8 @@ pip install django
 django-admin startproject config
 
 # Django project폴더의 이름 변경
-# Django와 관련된 코드만이 모여있다는 의미로 "django"라는 이름을 붙입니다.
-mv config django
+# Django 프로젝트(웹 애플리케이션) 관련된 코드만이 모여있다는 의미로 "app"라는 이름을 붙입니다.
+mv config app
 
 # 설치된 pip패키지 목록을 requirements.txt에 남기기
 pip freeze > requirements.txt
@@ -92,9 +92,9 @@ pip freeze > requirements.txt
 
 ### `Sources root`설정
 
-이 프로젝트에서 해석할 파이썬 애플리케이션의 최상단을 지정합니다. Django프로젝트는 프로젝트 루트 폴더의 한 단계 아래인 `sample-project/django`폴더에 있으므로 **반드시** 해당 폴더를 소스 루트로 지정해야 합니다.
+이 프로젝트에서 해석할 파이썬 애플리케이션의 최상단을 지정합니다. Django프로젝트는 프로젝트 루트 폴더의 한 단계 아래인 `sample-project/app`폴더에 있으므로 **반드시** 해당 폴더를 소스 루트로 지정해야 합니다.
 
-좌측의 프로젝트 구조에서 Django프로젝트 폴더(`sample-project/django/`)에 우클릭 -> `Mark Directory as` -> `Sources Root`선택
+좌측의 프로젝트 구조에서 Django프로젝트 폴더(`sample-project/app/`)에 우클릭 -> `Mark Directory as` -> `Sources Root`선택
 
 ## Git저장소 설정
 
