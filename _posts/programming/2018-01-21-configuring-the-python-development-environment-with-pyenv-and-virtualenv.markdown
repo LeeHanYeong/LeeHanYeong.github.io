@@ -258,7 +258,7 @@ cd sample-project
 현재 폴더에 특정 가상환경을 적용할 때는 `pyenv local`명령어를 사용합니다.
 
 ```shell
-~/projects/sample-project ➜ pyenv local sample-project
+~/projects/sample-project ➜ pyenv local sample-env
 # 프롬프트 좌측에 적용된 가상환경명이 표시됩니다
 (sample-env) ~/projects/sample-project ➜
 ```
