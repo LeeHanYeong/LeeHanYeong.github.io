@@ -240,3 +240,20 @@ hr {
   border-width: 1px 0 0 0;
   color: $grey-color;
 }
+
+
+img {
+  max-width: 70%;
+  margin: 1rem auto;
+  display: block;
+}
+.img-caption {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+@include media-query($on-laptop) {
+  img {
+    max-width: 100%;
+  }
+}
