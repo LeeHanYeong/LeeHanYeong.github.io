@@ -140,10 +140,10 @@ blockquote {
   }
   
   a {
-    color: $grey-color-light;
+    color: $blockquote-color-a;
     
     &:visited {
-      color: $grey-color;
+      color: $blockquote-color-a-visited;
     }
   }
 }
