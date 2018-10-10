@@ -239,7 +239,7 @@ place = models.OneToOneField(
 
 ### Relationships
 
-관계형 데이터베이스의 강력함은 테이블간의 관게에 있습니다. 장고는 데이터베이스의 관계 유형 중 가장 일반적인 3가지를 제공합니다: `many-to-one`, `many-to-many`, `one-to-one`
+관계형 데이터베이스의 강력함은 테이블간의 관계에 있습니다. 장고는 데이터베이스의 관계 유형 중 가장 일반적인 3가지를 제공합니다: `many-to-one`, `many-to-many`, `one-to-one`
 
 #### Many-to-one relationships
 
@@ -309,7 +309,7 @@ class Pizza(models.Model):
 
 ---
 
-#### Extra fifelds on many-too-many relationships
+#### Extra fields on many-to-many relationships
 
 피자와 토핑같은 간단한 many-to-many 관계를 만들 때, `ManyToManyField`는 필요로 하는 모든 것을 제공합니다. 하지만, 때때로 두 모델 사이의 관계와 데이터를 연결해야 할 수도 있습니다.
 
@@ -340,7 +340,7 @@ class Membership(models.Model):
     invite_reason = models.CharField(max_length=64)
 ```
 
-중간 모델을 설정할 때, 명시적으로 many-to-many관계에 참여하는 모델들의 `ForeignKey`를 지정합니다. 이 명시적 선언은 두 모델이 관련되는 법을 정읳바니다.
+중간 모델을 설정할 때, 명시적으로 many-to-many관계에 참여하는 모델들의 `ForeignKey`를 지정합니다. 이 명시적 선언은 두 모델이 관련되는 법을 정의합니다.
 
 중간 모델에는 몇 가지 제한 사항이 있습니다:
 
