@@ -4,6 +4,9 @@ title:  "rbenv환경에서 Jekyll 블로그 생성하고 GitHub Pages에 배포�
 categories: ['기타']
 ---
 
+> **19.01.01**
+> Ruby버전, Gemfile내용 수정
+
 이 포스팅에서는 `macOS`환경에서 `rbenv`를 사용해 `Jekyll`블로그를 생성하고, 이를 `GitHub Pages`에 배포하는 방법을 다룬다.  
 
 ---
@@ -60,11 +63,11 @@ eval "$(rbenv init -)"
 
 #### rbenv를 이용해 ruby설치, 전역에서 사용할 ruby버전 지정
 ```
-➜ rbenv install 2.4.1
-➜ rbenv global 2.4.1
+➜ rbenv install 2.5.3
+➜ rbenv global 2.5.3
 ➜ rbenv versions
   system
-* 2.4.1 (set by /Users/lhy/.rbenv/version)
+* 2.5.3 (set by /Users/lhy/.rbenv/version)
 ```
 
 `*`표가 붙은 부분이 현재 사용하고 있는 `Ruby`버전을 나타낸다.
@@ -109,27 +112,53 @@ drwxr-xr-x   3 lhy  staff   102B  6 17 17:13 _posts
 -rw-r--r--   1 lhy  staff   213B  6 17 17:13 index.md
 ```
 
-`jekyll`패키지 대신 `github-pages`를 사용하도록 `Gemfile`의 내용을 수정해준다.  
-`gem "jekyll"...`부분은 주석처리하고, `gem "github-pages"...`부분을 활성화시킨다.
+`github-pages`버전을 동적으로 설정하도록 `Gemfile`을 아래 내용으로 덮어씌운다.
 
-```
-➜ vi Gemfile
-...
+**`Gemfile`**
+```gemfile
+source 'https://rubygems.org'
+
+# github-pages
+require 'json'
+require 'open-uri'
+versions = JSON.parse(open('https://pages.github.com/versions.json').read)
+gem 'github-pages', versions['github-pages'], group: :jekyll_plugins
+
+
+#ruby RUBY_VERSION
+
+# Hello! This is where you manage which Jekyll version is used to run.
+# When you want to use a different version, change it below, save the
+# file and run `bundle install`. Run Jekyll with `bundle exec`, like so:
+#
+#     bundle exec jekyll serve
+#
+# This will help ensure the proper Jekyll version is running.
+# Happy Jekylling!
 # gem "jekyll", "3.4.3"
+
 # This is the default theme for new Jekyll sites. You may change this to anything you like.
 gem "minima", "~> 2.0"
 
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and
 # uncomment the line below. To upgrade, run `bundle update github-pages`.
-gem "github-pages", group: :jekyll_plugins
-...
+# gem "github-pages", group: :jekyll_plugins
+
+# If you have any plugins, put them here!
+group :jekyll_plugins do
+   gem "jekyll-feed", "~> 0.6"
+end
+
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 ```
 
 실행 전 `bundle`로 관리되는 패키지들을 업데이트 시켜준다
 
 ```
-bundle install
+gem install bundler
 bundle update
+bundle install
 ```
 
 실제 정적 사이트를 생성하고, 테스트를 위한 로컬 서버를 실행한다.
@@ -182,7 +211,7 @@ vi .gitignore
 ➜ git init
 ➜ git add -A
 ➜ git commit -m 'First commit'
-➜ git remote add git@github.com:LeeHanYeong/LeeHanYeong.github.io.git
+➜ git remote add origin git@github.com:LeeHanYeong/LeeHanYeong.github.io.git
 ➜ git push origin master
 ```
 
