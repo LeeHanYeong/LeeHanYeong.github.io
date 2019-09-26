@@ -1,0 +1,12 @@
+---
+layout: default
+---
+<div class="home">
+  <h1 class="page-heading">Mash-Up 8th DjangoStudy</h1>
+  <ul class="post-list">
+    {% assign post_list = site.posts | where_exp:"post", "post.path contains '_posts/lecture/django/mashup-8th/'" | reverse %}
+    {% for post in post_list %}
+      {% include post-list-item.html post=post view_tag=false %}
+    {% endfor %}
+  </ul>
+</div>

@@ -32,7 +32,7 @@ docker run --rm -it ubuntu:16.04 /bin/bash
 
 ```docker
 FROM        ubuntu:16.04
-MAINTAINER  dev@azelf.com
+MAINTAINER  dev@lhy.kr
 
 RUN         apt-get -y update
 RUN         apt-get install -y python-pip
@@ -84,7 +84,7 @@ docker build -t base . -f Dockerfile_base
 
 ```docker
 FROM        base
-MAINTAINER  dev@azelf.com
+MAINTAINER  dev@lhy.kr
 
 ENV         LANG C.UTF-8
 COPY        requirements.txt /srv/requirements.txt
@@ -167,7 +167,7 @@ docker rmi -f $(docker images --filter "dangling=true" -q)
 
 ```docker
 FROM        base
-MAINTAINER  dev@azelf.com
+MAINTAINER  dev@lhy.kr
 
 ENV         LANG C.UTF-8
 

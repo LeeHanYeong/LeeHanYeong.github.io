@@ -226,13 +226,13 @@ $ git rebase --continue
 ```
 $ git log
 commit 6fc9779c4b4c6a43e35ccb45f5d62502e0b3e878 (HEAD -> master)
-Author: LeeHanYeong <dev@azelf.com>
+Author: LeeHanYeong <dev@lhy.kr>
 Date:   Sun Apr 29 19:29:31 2018 +0900
 
     영희의 작업 추가
 
 commit 0fabb50ebbfef4c79567458d00de1509f3677c3b (origin/master)
-Author: LeeHanYeong <dev@azelf.com>
+Author: LeeHanYeong <dev@lhy.kr>
 Date:   Sun Apr 29 19:28:51 2018 +0900
 
     철수의 작업 추가
@@ -249,7 +249,7 @@ $ git push origin master
 ```
 $ git log
 commit 6fc9779c4b4c6a43e35ccb45f5d62502e0b3e878 (HEAD -> master, origin/master)
-Author: LeeHanYeong <dev@azelf.com>
+Author: LeeHanYeong <dev@lhy.kr>
 Date:   Sun Apr 29 19:29:31 2018 +0900
 
     영희의 작업 추가
