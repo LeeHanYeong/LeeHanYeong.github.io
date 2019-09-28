@@ -101,7 +101,7 @@ eval "$(pyenv virtualenv-init -)"
 ➜ vi ~/.bash_profile
 
 # 가장 아래쪽에 아래 문장 추가
-export PYENV_ROOT=/usr/local/var/pyenv
+export PYENV_PATH=$HOME/.pyenv
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 ```
@@ -120,7 +120,7 @@ if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -
 
 ```shell
 ❯ pyenv
-pyenv 1.2.1
+pyenv 1.2.13
 Usage: pyenv <command> [<args>]
 
 Some useful pyenv commands are:
@@ -163,7 +163,7 @@ brew install readline xz
 ```shell
 sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
 libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-xz-utils tk-dev
+xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
 ```
 
 ---
@@ -172,12 +172,12 @@ xz-utils tk-dev
 
 ### pyenv로 파이썬 설치
 
-pyenv를 이용해 설치 가능한 파이썬 버전을 확인합니다. 연습용 신규 프로젝트라면 파이썬3의 가장 최신 버전을 사용합니다. (2018-01-21시점에서 3.6.4)
+pyenv를 이용해 설치 가능한 파이썬 버전을 확인합니다. 연습용 신규 프로젝트라면 파이썬3의 가장 최신 버전을 사용합니다. (2018-01-21시점에서 3.7.4)
 
 ```shell
 ➜ pyenv install --list
 # 이후 원하는 버전을 설치한다.
-➜ pyenv install 3.6.4
+➜ pyenv install 3.7.4
 ```
 
 ### pyenv로 관리되는 파이썬 목록 확인
@@ -187,20 +187,20 @@ pyenv로 관리되는 파이썬 버전들을 보려면 아래 명령어를 입�
 ```shell
 ➜ pyenv versions
 * system
-  3.6.4
+  3.7.4
 ```
 
 목록 중 `*`이 붙어있는 항목이 현재 셸에서 사용되고 있는 파이썬 버전입니다.
 
 ### 전역에서 사용할 파이썬 설정
 
-설치된 파이썬 목록 중 방금 설치한 `3.6.4`를 전역에서 사용하기 위해 아래 명령어를 입력합니다.
+설치된 파이썬 목록 중 방금 설치한 `3.7.4`를 전역에서 사용하기 위해 아래 명령어를 입력합니다.
 
 ```shell
-➜ pyenv global 3.6.4
+➜ pyenv global 3.7.4
 ➜ pyenv versions
   system
-* 3.6.4
+* 3.7.4
 ```
 
 ### 현재 사용되는 파이썬 버전 확인
@@ -209,25 +209,25 @@ pyenv로 관리되는 파이썬 버전들을 보려면 아래 명령어를 입�
 
 ```shell
 ➜ pyenv version
-3.6.4 (set by <파이썬 설치 경로>)
+3.7.4 (set by <파이썬 설치 경로>)
 
 ➜ python --version
-Python 3.6.4
+Python 3.7.4
 ```
 
 ---
 
 ## pyenv-virtualenv를 사용한 가상환경 관리
 
-이제 컴퓨터 전역에서 `pyenv`로 관리되는 `3.6.4`버전의 파이썬을 사용합니다. 이번에는 해당 버전의 파이썬을 사용하는 가상환경을 만들어봅니다.
+이제 컴퓨터 전역에서 `pyenv`로 관리되는 `3.7.4`버전의 파이썬을 사용합니다. 이번에는 해당 버전의 파이썬을 사용하는 가상환경을 만들어봅니다.
 
 ### 가상환경 `sample-env`생성
 
 가상환경을 생성하는 문법은 `pyenv virtualenv <version> <env_name>`입니다.
 
 ```
-# 3.6.4버전을 기준으로 sample-env라는 환경을 만듭니다.
-➜ pyenv virtualenv 3.6.4 sample-env
+# 3.7.4버전을 기준으로 sample-env라는 환경을 만듭니다.
+➜ pyenv virtualenv 3.7.4 sample-env
 (생성하면서 Requirement already....라는 메시지가 출력됩니다)
 ```
 
@@ -268,8 +268,8 @@ cd sample-project
 ```shell
 (sample-env) ~/projects/sample-project ➜ pyenv versions
   system
-  3.6.4
-  3.6.4/envs/sample-env
+  3.7.4
+  3.7.4/envs/sample-env
 * sample-env (set by <.python-version>파일의 위치)
 ```
 
