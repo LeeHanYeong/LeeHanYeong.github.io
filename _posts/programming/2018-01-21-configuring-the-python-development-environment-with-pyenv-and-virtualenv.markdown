@@ -5,7 +5,7 @@ categories: ['Python']
 ---
 
 파이썬으로 프로젝트를 진행한다면 각 프로젝트별로 파이썬 버전과 가상환경을 분리하여 사용할 것을 추천합니다.  
-이 포스팅은 파이썬 버전과 가상환경 분리에 `yyuu`의 `pyenv`, `pyenv-virtualenv`라이브러리를 사용하며, `macOS Sierra`또는 `Ubuntu linux(16.04)`환경을 기준으로 설명합니다.
+이 포스팅은 파이썬 버전과 가상환경 분리에 `yyuu`의 `pyenv`, `pyenv-virtualenv`라이브러리를 사용하며, `macOS Catalina`또는 `Ubuntu linux(18.04)`환경을 기준으로 설명합니다.
 
 > 2018-01-21 자세한 업데이트 및 Ubuntu설치과정 추가
 
