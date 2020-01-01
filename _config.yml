@@ -90,3 +90,10 @@ plugins:
 exclude:
   - Gemfile
   - Gemfile.lock
+
+# Manifest
+manifest_name: lhy.kr
+manifest_short_name: lhy.kr
+manifest_lang: ko
+manifest_background_color: white
+manifest_display: standalone
