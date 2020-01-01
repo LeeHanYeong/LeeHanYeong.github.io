@@ -9,7 +9,7 @@ categories: ['Python']
 - 공식사이트  
   [https://python-poetry.org/](https://python-poetry.org/)
 - 공식문서  
-  https://python-poetry.org/docs/
+  [https://python-poetry.org/docs/](https://python-poetry.org/docs/)
 
 파이썬의 기본 패키지 관리자인 pip는 패키지간 의존성 및 버전 호환 관리가 힘들며, 의존성 패키지를 제외한 실제 필요 패키지의 구분이 어렵습니다.
 
@@ -63,6 +63,11 @@ export PATH=$HOME/.poetry/bin:$PATH
 npm init과 비슷하게, Poetry로 해당 폴더의 패키지 관리를 시작하는 명령어를 사용합니다
 
 ```
+# pyenv, pyenv-virtualenv를 사용하는 경우, 아래 명령어로 가상환경 생성&적용 후 실행
+# pyenv virtualenv <버전> <env명>
+# pyenv local <env명>
+
+# 가상환경이 적용되지 않은 상태에서 초기화 시, Poetry가 임의의 가상환경을 생성
 poetry init
 ```
 
