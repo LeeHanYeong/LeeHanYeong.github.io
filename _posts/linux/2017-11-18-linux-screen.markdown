@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "screen 명령어"
-categories: ['Linux', 'Ubuntu']
+categories: ['Linux']
 ---
 
 ## screen실행/복구 명령어

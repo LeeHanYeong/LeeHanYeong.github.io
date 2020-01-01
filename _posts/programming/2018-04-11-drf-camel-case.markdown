@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "DRF에서 CamelCase JSON을 적용 및 테스트에 참고할 점"
-categories: ['Python', 'Django', 'DRF']
+categories: ['Python', 'Django']
 ---
 
 DRF(Django REST framework)의 파싱과 렌더링은 기본값으로 JSON형식을 사용하나, 키 값에 파이썬 변수 명명규칙인 `lower_case_with_underscores(Snake Case)`를 사용합니다.

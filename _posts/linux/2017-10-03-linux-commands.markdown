@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "자주 검색하는 리눅스 명령어들"
-categories: ['Linux', 'Ubuntu']
+categories: ['Linux']
 ---
 
 

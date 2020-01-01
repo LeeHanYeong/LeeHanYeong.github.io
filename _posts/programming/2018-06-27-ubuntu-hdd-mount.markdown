@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Ubutnu 외장 하드 자동 마운트"
-categories: ['Linux']
+categories: ['기타']
 ---
 
 외장 하드를 연결하고 UUID 확인

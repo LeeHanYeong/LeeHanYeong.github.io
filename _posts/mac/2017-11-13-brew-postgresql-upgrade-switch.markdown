@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "brew에서 postgresql 업그레이드 후 DB접속 문제 해결"
-categories: ['macOS', 'brew']
+categories: ['macOS']
 ---
 
 `postgresql`의 버전이 업그레이드 되면, 분명히 `brew`를 이용해 `postgreql`이 서비스로 동작하고 있음에도 `psql`명령어 등을 사용했을 때 DB에 접속할 수 없다는 에러가 발생한다.

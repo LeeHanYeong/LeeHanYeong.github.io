@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "brew로 설치한 MySQL의 mysql.server start오류 해결"
-categories: ['macOS']
+categories: ['기타']
 ---
 
 ```

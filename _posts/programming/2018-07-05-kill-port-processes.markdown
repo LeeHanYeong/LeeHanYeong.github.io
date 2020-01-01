@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "특정 Port의 프로세스 죽이기"
-categories: ['Linux']
+categories: ['기타']
 ---
 
 ```

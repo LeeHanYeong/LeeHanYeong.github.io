@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "PyCharm에서 파이썬 모듈의 속성들을 Project탭에서 확인하는 법"
-categories: ['PyCharm', 'Python']
+categories: ['IDE', 'Python']
 ---
 
 PyCharm은 파이썬 모듈의 속성들을 트리구조 뷰(Project 탭)에서 바로 확인할 수 있는 기능을 제공합니다.

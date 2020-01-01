@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "초심자들이 자주 묻는 질문"
-categories: ['강의']
+categories: ['기타']
 ---
 
 저는 지금 패스트캠퍼스에서 웹 프로그래밍 스쿨 과정을 맡고 있습니다.

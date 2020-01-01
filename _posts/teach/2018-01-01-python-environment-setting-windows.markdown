@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Windows환경에서의 파이썬 환경설정"
-categories: ['강의']
+categories: ['기타']
 ---
 
 윈도 환경에서 파이썬을 설치하고, `Visual Studio Code`를 사용해 파이썬 개발 환경을 구축해봅니다.

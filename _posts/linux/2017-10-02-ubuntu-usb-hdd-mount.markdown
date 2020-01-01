@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "리눅스에서 3TB이상의 USB외장하드 마운트시키기"
-categories: ['Linux', 'Ubuntu']
+categories: ['Linux']
 ---
 
 ## 디스크 파티션 나누기

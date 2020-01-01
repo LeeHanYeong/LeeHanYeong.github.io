@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "ssh를 사용해서 screen세션 생성 후 명령어 실행"
-categories: ['Linux']
+categories: ['기타']
 ---
 
 ```

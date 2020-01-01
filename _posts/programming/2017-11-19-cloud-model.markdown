@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "클라우드 서비스 모델의 종류 (IaaS, PaaS, SaaS)"
-categories: ['Network']
+categories: ['기타']
 ---
 
 ### 클라우드 서비스 모델

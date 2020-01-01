@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "(번역) Django 공식문서 - Introduction to models"
-categories: ['Django', '번역']
+categories: ['Django']
 ---
 
 - 원본 문서: [Introduction to models](https://docs.djangoproject.com/en/2.0/topics/db/models/)
@@ -213,7 +213,7 @@ first_name = models.CharField("person's first name", max_length=30)
 아래의 예에서는 verbose name은 `first name`입니다.
 
 ```python
-​first_name = models.CharField(max_length=30)
+first_name = models.CharField(max_length=30)
 
 ```
 
@@ -382,9 +382,9 @@ class Membership(models.Model):
 >>> beatles.members.set([john, paul, ringo, george])
 ```
 
-​왜냐하면, `Person`과 `Group`관계를 설정할 때 중간 모델의 필드값들을 명시해주어야 하기 때문입니다. 즉, 위의 예와 같이 단순히 **add/create/set**하는 경우에는 중간 모델에서 person과 group필드값은 알 수 있지만, date_joined와 invite_reason필드값은 알 수 없기 때문입니다.
+왜냐하면, `Person`과 `Group`관계를 설정할 때 중간 모델의 필드값들을 명시해주어야 하기 때문입니다. 즉, 위의 예와 같이 단순히 **add/create/set**하는 경우에는 중간 모델에서 person과 group필드값은 알 수 있지만, date_joined와 invite_reason필드값은 알 수 없기 때문입니다.
 
-​​그러므로 중간모델을 직접 지정한 경우에는 중간 모델을 직접 생성하는 방법밖에는 없습니다.​
+​그러므로 중간모델을 직접 지정한 경우에는 중간 모델을 직접 생성하는 방법밖에는 없습니다.​
 ​
 
 ```python

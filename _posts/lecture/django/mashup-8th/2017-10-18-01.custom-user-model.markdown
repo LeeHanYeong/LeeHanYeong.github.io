@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "스터디를 준비하며"
-categories: ['Mash-Up']
+categories: ['기타']
 ---
 
 연합 앱개발 동아리인 Mash-Up에서 

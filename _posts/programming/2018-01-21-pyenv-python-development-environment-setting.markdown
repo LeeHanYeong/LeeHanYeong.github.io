@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "PyCharm과 pyenv를 사용한 Django 개발 환경 설정"
-categories: ['Django', 'Python', 'PyCharm']
+categories: ['Django', 'Python', 'IDE']
 ---
 
 > 이 포스팅은 **[pyenv와 virtualenv를 사용한 파이썬 개발환경 구성](/configuring-the-python-development-environment-with-pyenv-and-virtualenv)** 포스팅 에서 이어집니다.

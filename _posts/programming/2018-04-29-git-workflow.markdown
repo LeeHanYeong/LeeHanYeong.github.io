@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Git을 이용한 협업 워크플로우"
-categories: ['Git']
+categories: ['기타']
 ---
 
 Git을 사용한 협업 방법에 대해 가장 많이 참조하던 글의 이미지가 깨져있어, CC라이센스상 문제가 없기에 번역문에서 이미지 링크를 수정하고 Subversion과의 비교를 제외하여 작성했습니다.
