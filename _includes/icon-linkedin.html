@@ -1,1 +1,7 @@
-<a href="https://www.linkedin.com/in/{{ include.username }}" target="_blank"><span class="svg-icon linkedin{% if include.large %} large{% endif %}"></span>{% if include.large %}{% else %}<span class="username">{{ include.username }}</span>{% endif %}</a>
+<a href="https://www.linkedin.com/in/{{ include.username }}" target="_blank">
+    <span class="svg-icon linkedin{% if include.large %} large{% endif %}"></span>
+    {% if include.large or include.only_icon %}
+    {% else %}
+        <span class="username">{{ include.username }}</span>
+    {% endif %}
+</a>

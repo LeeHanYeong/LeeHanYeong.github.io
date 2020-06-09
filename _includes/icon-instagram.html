@@ -1,2 +1,8 @@
-<a href="https://instagram.com/{{ include.username }}" target="_blank"><span class="svg-icon instagram{% if include.large %} large{% endif %}"></span>{% if include.large %}{% else %}<span class="username">{{ include.username }}</span>{% endif %}</a>
+<a href="https://instagram.com/{{ include.username }}" target="_blank">
+    <span class="svg-icon instagram{% if include.large %} large{% endif %}"></span>
+    {% if include.large or include.only_icon %}
+    {% else %}
+        <span class="username">{{ include.username }}</span>
+    {% endif %}
+</a>
 

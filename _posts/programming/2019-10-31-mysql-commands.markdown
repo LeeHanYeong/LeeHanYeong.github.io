@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "MySQL 관련 여러가지 정리"
+title:  "ln 옵션"
 categories: ['기타']
 ---
 

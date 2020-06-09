@@ -1,26 +1,96 @@
-<!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: "en" }}">
-  {% include head.html %}
-  <body>
-    {% include header.html %}
-    <div class="container content-container container-nav">
-      <div class="text-center">
-        {% include profile.html %}
-        
-        <div style="padding-bottom: 30px;">
-          <ul class="post-list">
-          {% for post in site.posts limit: 5%}
-            {% include post-list-item.html post=post view_tag=true %}
-          {% endfor %}
-          </ul>
-          <a style="margin-top: -20px;" href="/posts/" class="btn btn-primary btn-block">View all posts</a>
-        </div>
-      </div>
-      
+---
+layout: default
+title: lhy's Blog
+permalink: /
+---
+<div class="row">
+  <div class="col-md-3 text-center">
+    {% include profile.html %}
+  </div>
+  <div class="col-md-9">
+    <div>
+      <h2>
+        <span>Recent posts</span>
+        <a href="/posts/" class="btn btn-primary btn-sm ml-1" target="_blank">
+          <span>View all posts</span>
+          <i class="fas fa-chevron-right ml-1"></i>
+        </a>
+      </h2>
+      <ul class="post-list mb-0" style="font-size: 0.7rem;">
+        {% for post in site.posts limit: 3 %}
+          {% include post-list-item.html post=post view_tag=true %}
+        {% endfor %}
+      </ul>
     </div>
-    <nav class="navbar fixed-bottom navbar-light bg-light">
-      
-    </nav>
-  </body>
-</html>
+    <div>
+      <h2>Projects</h2>
+      <ul class="project-list">
+        <li class="project-item">
+          <div class="project-item-title">
+            Django SecretsManager 
+            <a href="https://github.com/LeeHanYeong/django-secrets-manager" target="_blank">
+              <i class="fab fa-github"></i>
+            </a> 
+          </div>
+          <div class="project-item-content">
+            AWS의 SecretsManager서비스를 사용해 Django의 비밀값을 관리하도록 도와주는 라이브러리
+          </div>
+          <div class="project-item-tags">
+            <span class="badge badge-success">Django</span>
+            <span class="badge badge-warning">AWS</span>
+            <span class="badge badge-info">OpenSource</span>
+          </div>
+        </li>
+        <li class="project-item">
+          <div class="project-item-title">
+            django-quill-editor
+            <a href="https://github.com/LeeHanYeong/django-quill-editor" target="_blank">
+              <i class="fab fa-github"></i>
+            </a> 
+          </div>
+          <div class="project-item-content">
+            HTML과 JS기반의 WYSIWYG에디터인 Quill.js를 Django의 Form과 Admin에서 사용할 수 있도록 도와주는 라이브러리
+          </div>
+          <div class="project-item-tags">
+            <span class="badge badge-success">Django</span>
+            <span class="badge badge-dark">JavaScript</span>
+            <span class="badge badge-info">OpenSource</span>
+          </div>
+        </li>
+        <li class="project-item">
+          <div class="project-item-title">
+            Mash-Up API Backend
+            <a href="https://github.com/LeeHanYeong/Mash-Up-Backend" target="_blank">
+              <i class="fab fa-github"></i>
+            </a> 
+            <a href="https://mashup.lhy.kr/doc/" target="_blank">
+              <i class="fas fa-book"></i>
+            </a>
+          </div>
+          <div class="project-item-content">
+            연합IT동아리 Mash-Up의 공식앱 API백엔드 애플리케이션
+          </div>
+          <div class="project-item-tags">
+            <span class="badge badge-success">Django</span>
+          </div>
+        </li>
+        <li class="project-item">
+          <div class="project-item-title">
+            eb-deploy-base
+            <a href="https://github.com/LeeHanYeong/eb-deploy-base" target="_blank">
+              <i class="fab fa-github"></i>
+            </a> 
+          </div>
+          <div class="project-item-content">
+            AWS ElasticBeanstalk기반의 개인 프로젝트 배포용 컨테이너 프로젝트
+          </div>
+          <div class="project-item-tags">
+            <span class="badge badge-primary">Python</span>
+            <span class="badge badge-warning">AWS</span>
+          </div>
+        </li>
+      </ul>
 
+    </div>
+  </div>
+</div>
