@@ -1,219 +1,192 @@
 ---
 layout: post
-title:  "rbenv환경에서 Jekyll 블로그 생성하고 GitHub Pages에 배포하기"
+title:  "GitHub Pages와 Jekyll을 사용한 정적 블로그 구축"
 categories: ['기타']
 ---
 
-> **19.01.01**
+**Updates**
+
+> **22.07.12**  
+> 최신 환경 업데이트
+>
+> **19.01.01**  
 > Ruby버전, Gemfile내용 수정
 
-이 포스팅에서는 `macOS`환경에서 `rbenv`를 사용해 `Jekyll`블로그를 생성하고, 이를 `GitHub Pages`에 배포하는 방법을 다룬다.  
+**Notes**
 
----
-## Jekyll?
-`Jekyll`은 일반적으로 블로그를 만들기 위해 사용하는 정적 사이트 생성기이다.  
-데이터베이스를 사용하지 않고 `git`과 같은 버전관리 시스템을 사용해 포스트들을 관리하며, 정적 웹사이트이기 때문에 단순 파일 서빙만으로 블로그를 만들 수 있다.
+> Apple Silicon + macOS Monterey 환경을 기준으로 합니다.
 
-정적 웹 사이트라는 특징덕에 `GitHub`에서는 `Jekyll`블로그를 서빙하기 위한 시스템을 제공하며 무료로 사용가능하다.
+## GitHub Pages + Jekyll
 
-또한 포스트(소스)의 형태를 `HTML`이 아닌 개발자 친화적인 다른 마크업(대부분의 경우 `Markdown`)을 사용할 수 있으며, 데이터베이스를 쓰지 않는다는 점은 역으로 버전관리 시스템을 사용해서 작성한 글 들을 편리하게 관리할 수 있다는 장점을 준다.
+GitHub에서 제공하는 정적 웹 사이트 서비스인 [GitHub Pages](https://pages.github.com/)는 Git 저장소에 새로운 커밋이 추가 될 때마다 업데이트 되는 사이트를 만들 수 있으며, 정적 사이트 생성기인 [Jekyll](https://jekyllrb.com/)을 함께 사용하면 좀 더 쉽게 사이트의 레이아웃을 편집 할 수 있다.
 
 데이터베이스를 쓰지 않기 때문에 댓글기능은 타사 서비스를 사용하거나(`disqus`) 직접 만들어야 한다.
 
-## 설치
-`Jekyll`을 로컬환경에서 실행하기 위해서는 특정 버전 이상의 `Ruby`가 필요하다. `macOS`에 기본설치된 `Ruby`는 버전이 낮기때문에, 시스템의 `Ruby`를 업그레이드하거나 `Ruby`의 버전관리도구를 사용하는 방법이 있다.  
-개인적으로 시스템에 이미 설치된 파이썬이나 루비를 변경하는것을 선호하지 않기 때문에, 여기서는 `Ruby`의 버전관리도구중 하나인 `rbenv`를 사용한다.
+## Jekyll 설치
 
-`Ubuntu Linux`사용자들은 [이 포스팅](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-16-04)을 참조한다.
+Jekyll을 로컬환경에서 실행하기 위해서는 특정 버전 이상의 Ruby가 필요하다. Ruby는 Homebrew를 사용해 설치한다.
 
-#### Homebrew설치
-`rbenv`를 설치하기 위해 macOS용 패키지 관리자인 `Homebrew`를 이용한다.  
+1. **Homebrew 설치**  
+   https://brew.sh/
 
-```
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
+2. **openssl@1.1 설치**  
 
-- `Homebrew`에 대한 자세한 내용은 [공식 페이지](https://brew.sh/index_ko.html)에서 확인 할 수 있다.
-- 이미 `Homebrew`가 설치되어 있는경우 `brew update`를 이용해 `Homebrew`를 최신버전으로 업데이트해준다.
+   ```shell
+   ❯ brew install openssl@1.1
+   ```
+
+   > rbenv로 새 Ruby를 설치할 때 openssl1.1버전이 필요하며, brew로 설치해주어야 한다.
+
+3. **brew info openssl@1.1**  
+
+   ```shell
+   openssl@1.1 is keg-only, which means it was not symlinked into /opt/homebrew,
+   because macOS provides LibreSSL.
+   
+   If you need to have openssl@1.1 first in your PATH, run:
+     echo 'export PATH="/opt/homebrew/opt/openssl@1.1/bin:$PATH"' >> ~/.zshrc
+   
+   For compilers to find openssl@1.1 you may need to set:
+     export LDFLAGS="-L/opt/homebrew/opt/openssl@1.1/lib"
+     export CPPFLAGS="-I/opt/homebrew/opt/openssl@1.1/include"
+   
+   For pkg-config to find openssl@1.1 you may need to set:
+     export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@1.1/lib/pkgconfig"
+   ```
+
+   brew info로 출력되는 메세지 중, export로 시작하는 설정들을 자신이 사용하고 있는 Shell의 설정에 추가한다. 필자는 zsh을 사용하며, 설정은 ~/.zshrc파일을 사용하고 있다.
+
+4. **Shell rc파일에 openssl 설정 추가**
+
+   ```shell
+   # openssl
+   export PATH="/opt/homebrew/opt/openssl@1.1/bin:$PATH"
+   export LDFLAGS="-L/opt/homebrew/opt/openssl@1.1/lib"
+   export CPPFLAGS="-I/opt/homebrew/opt/openssl@1.1/include"
+   export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@1.1/lib/pkgconfig"
+   ```
+
+   > /opt/homebrew 경로는 CPU종류 (Apple Silicon / Intel)에 따라 달라질 수 있다.
+
+5. **터미널 재시작 후, openssl 의 위치 출력**  
+
+   ```shell
+   ❯ which openssl
+   /opt/homebrew/opt/openssl@1.1/bin/openssl
+   ```
+
+   위 경로 중 /bin/openssl을 제외한 앞 부분을 아래에서 사용한다.
+
+6. **rbenv, ruby-build 설치**  
+
+   ```shell
+   ❯ brew install rbenv ruby-build
+   ```
+
+7. **Shell rc파일에 rbenv 설정 추가**  
+
+   ```shell
+   # rbenv
+   export RUBY_CONFIGURE_OPTS="--with-openssl-dir=/opt/homebrew/opt/openssl@1.1"
+   eval "$(rbenv init - zsh)"
+   ```
+
+   > --with-openssl-dir=다음에 위에서 which openssl로 찾아낸 openssl@1.1경로를 입력
+
+8. **터미널 재시작 후, 최신버전 Ruby설치**  
+
+   ```shell
+   ❯ rbenv install --list
+   2.6.10
+   2.7.6
+   3.0.4
+   3.1.2  # Major버전 3에서 가장 최신
+   jruby-9.3.6.0
+   mruby-3.1.0
+   picoruby-3.0.0
+   rbx-5.0
+   truffleruby-22.1.0
+   truffleruby+graalvm-22.1.0
+   
+   ❯ rbenv install 3.1.2  # 가장 최신버전을 사용
+   Downloading ruby-3.1.2.tar.gz...
+   -> https://cache.ruby-lang.org/pub/ruby/3.1/ruby-3.1.2.tar.gz
+   Installing ruby-3.1.2...
+   ruby-build: using readline from homebrew
+   ```
+
+9. **설치된 Ruby버전 확인**  
+
+   ```shell
+   ❯ rbenv versions
+   * system (set by /Users/lhy/.rbenv/version)
+     3.1.2
+   ```
+
+10. **rbenv로 설치한 Ruby를 사용하도록 전역설정 변경**  
+
+    ```shell
+    ❯ rbenv global 3.1.2
+    ❯ rbenv versions
+      system
+    * 3.1.2 (set by /Users/lhy/.rbenv/version)
+    ```
+
+11. **Ruby의 패키지 관리자인 gem을 사용해 Jekyll, bundler설치**  
+
+    ```shell
+    ❯ gem install jekyll bundler
+    ❯ bundle add webrick  # Jekyll 실행 위해 필요한 라이브러리
+    ```
+
+12. **블로그를 생성할 위치로 이동, Jekyll 블로그 프로젝트 생성**  
+
+    ```shell
+    ❯ jekyll new blog  # blog는 생성할 디렉토리 이름으로 변경 가능
+    ```
+
+13. **생성된 디렉토리로 이동, 로컬에서 블로그 서버 실행**  
+
+    ```shell
+    ❯ bundle exec jekyll serve
+    ```
+
+14. **localhost:4000에서 실행 확인**  
+    ![serve]({{ site.url }}/images/2017-06-17-create-jekyll-blog-using-rbenv-and-github-pages/serve.png)
 
 
-#### 이미 설치되어있던 ruby삭제
-이미 `Homebrew`를 사용하던 경우, 앞으로 `rbenv`에서 `Ruby`의 실행을 관리할 것이므로 기존에 설치된 `Ruby`를 지워준다.
-
-```
-brew uninstall ruby
-```
-
-#### rbenv설치
-
-```
-brew install rbenv ruby-build
-```
-
-#### rbenv를 위한 설정을 셸 설정파일에 추가
-`zsh`을 쓰는 경우 `~/.zshrc`, 기본 `bash`를 쓰는 경우 `~/.bash_profile`에 작성한다.
-
-```
-# rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-```
-
-**설정파일을 작성한 후 터미널을 종료하고 새로 열어준다**
-
-#### rbenv를 이용해 ruby설치, 전역에서 사용할 ruby버전 지정
-```
-➜ rbenv install 2.5.3
-➜ rbenv global 2.5.3
-➜ rbenv versions
-  system
-* 2.5.3 (set by /Users/lhy/.rbenv/version)
-```
-
-`*`표가 붙은 부분이 현재 사용하고 있는 `Ruby`버전을 나타낸다.
-
-#### 새 ruby버전 설치 후 rehash작업
-```
-rbenv rehash
-```
-
-`rehash`는 `rbenv`가 관리하는 루비 명령어들을 `~/.rbenv/shims`디렉토리에 셸 스크립트 파일로 복사해주는 역할을 한다.  
-새 `gem`을 설치하거나 새 `Ruby`버전을 설치한 경우 해당 명령을 실행해주어야 하며, 위의 셸 설정파일에 추가한 `rbenv init -`명령어에는 `rehash`기능이 포함되어있다. 터미널을 새로 열면 자동으로 `rehash`명령이 수행되므로 위 명령어를 실행하거나 새 터미널 창을 열면 된다.
-
-#### RubyGems, Gem, bundler
-[RubyGems](https://rubygems.org/)는 `Ruby`패키지 관리자이며, 각 패키지는 `Gem`이라고 불린다.
-설치해야 할 `Gem`은 `jekyll`과 `bundler`, `github-pages`이다.
-
-일반적으로 `Ruby`의 패키지들은 `RubyGems`를 이용해 관리되며, 시스템 어디에서나 설치된 `Gem`들을 사용할 수 있다.  
-하지만 프로젝트별로 필요한 각 패키지(`Gem`)들의 버전이 다를 수 있으며, 이러한 의존성 문제를 해결하기 위해 [bundler](http://ruby-korea.github.io/bundler-site/)라는 패키지를 사용한다. (`bundler`역시 `RubyGem`의 패키지이다)  
-`bundler`는 `Gemfile`과 `Gemfile.lock`파일을 이용해 현재 프로젝트 폴더에서 사용하는 패키지 버전들을 관리한다.
-
-`github-pages`는 `GitHub`에서 사용하는 `Jekyll`과 관련된 의존성 패키지들을 지원하는 `Gem`이다. 로컬에서 `Jekyll`을 이용해 사이트를 생성할때와는 다르게, `GitHub`에 코드를 업로드 했을 때 자동으로 사이트가 생성될 때는 `GitHub`에서 사이트가 생성되기 위한 여러 요소들이 필요한데, 이러한 부분들을 처리해주기 위한 지원 패키지 역할을 한다.
-
-```
-gem install jekyll bundler github-pages
-```
-
-## Jekyll블로그 생성 및 로컬 실행
-필요한 `Gem`들을 설치한 후, `Jekyll`블로그를 생성할 폴더의 상위 폴더에서 아래 명령을 실행하고 결과를 확인한다.
-
-```
-➜ jekyll new <블로그명>
-➜ cd <블로그명>
-➜ ls -al
-drwxr-xr-x   9 lhy  staff   306B  6 17 17:13 .
-drwxr-xr-x@ 61 lhy  staff   2.0K  6 17 17:12 ..
--rw-r--r--   1 lhy  staff    35B  6 17 17:13 .gitignore
--rw-r--r--   1 lhy  staff   953B  6 17 17:13 Gemfile
--rw-r--r--   1 lhy  staff   1.2K  6 17 17:13 Gemfile.lock
--rw-r--r--   1 lhy  staff   1.4K  6 17 17:13 _config.yml
-drwxr-xr-x   3 lhy  staff   102B  6 17 17:13 _posts
--rw-r--r--   1 lhy  staff   525B  6 17 17:13 about.md
--rw-r--r--   1 lhy  staff   213B  6 17 17:13 index.md
-```
-
-`github-pages`버전을 동적으로 설정하도록 `Gemfile`을 아래 내용으로 덮어씌운다.
-
-**`Gemfile`**
-```gemfile
-source 'https://rubygems.org'
-
-# github-pages
-require 'json'
-require 'open-uri'
-versions = JSON.parse(open('https://pages.github.com/versions.json').read)
-gem 'github-pages', versions['github-pages'], group: :jekyll_plugins
-
-
-#ruby RUBY_VERSION
-
-# Hello! This is where you manage which Jekyll version is used to run.
-# When you want to use a different version, change it below, save the
-# file and run `bundle install`. Run Jekyll with `bundle exec`, like so:
-#
-#     bundle exec jekyll serve
-#
-# This will help ensure the proper Jekyll version is running.
-# Happy Jekylling!
-# gem "jekyll", "3.4.3"
-
-# This is the default theme for new Jekyll sites. You may change this to anything you like.
-gem "minima", "~> 2.0"
-
-# If you want to use GitHub Pages, remove the "gem "jekyll"" above and
-# uncomment the line below. To upgrade, run `bundle update github-pages`.
-# gem "github-pages", group: :jekyll_plugins
-
-# If you have any plugins, put them here!
-group :jekyll_plugins do
-   gem "jekyll-feed", "~> 0.6"
-end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-```
-
-실행 전 `bundle`로 관리되는 패키지들을 업데이트 시켜준다
-
-```
-gem install bundler
-bundle update
-bundle install
-```
-
-실제 정적 사이트를 생성하고, 테스트를 위한 로컬 서버를 실행한다.
-
-```
-bundle exec jekyll serve
-```
-
-[127.0.0.1:4000](127.0.0.1:4000)으로 접속하면 아래와 같은 페이지를 확인할 수 있다.  
-![Jekyll_Welcome]({{ site.url }}/images/jekyll-welcome.png)
 
 ## 글 작성
-`Jekyll`의 글은 기본적으로 `Markdown`을 사용하며, `_posts`폴더내부에서 `YYYY-MM-DD-title.markdown`형식을 가진 파일 하나당 하나의 글이 된다.
 
-기본예제에 글이 하나 있으니 해당 내용을 기반으로 새 글을 작성해본다. 이 포스팅에서는 `Jekyll`에서의 글 작성법이나 문법은 다루지 않는다. 자세한 내용은 아래의 링크를 참조한다.
+Jekyll에서 글은 기본값으로 Markdown형식을 사용하며, **_posts** 디렉토리 내에 있는 **YYYY-MM-DD-title.markdown** 형식의  파일 하나당 하나의 글이 된다.
 
-[Jekyll 공식사이트 (영문)](https://jekyllrb.com/)  
-[Jekyll 공식사이트 (한글)](https://jekyllrb-ko.github.io/)
+jekyll new로 만들어진 프로젝트 내에 하나의 글이 있으니 해당 내용을 기반으로 새 글을 작성하고, 아래의 배포를 진행해보자. 여기서 Jekyll에서의 글 작성법이나 문법은 다루지 않는다. 자세한 내용은 공식사이트를 참조한다.
 
 
-## GitHub에 배포
-로컬에서 `jekyll serve`명령어를 사용하면 `_sites`폴더가 생성되며, 해당 폴더의 내용들이 정적 사이트 생성 결과물이 된다.  
-`GitHub Pages`에 배포할 때는 이 결과물이 아닌 `Jekyll`소스 자체를 사용한다.
-`Git`및 `ssh`의 정의와 사용법에 대해서는 설명하지 않는다.
 
-#### 저장소 생성
-`GitHub Pages`를 이용해 `Jekyll`블로그를 만들 때는, `<자신의 유저명>.github.io`라는 이름의 저장소를 만들어야 한다.  
-ex)`LeeHanYeong`사용자의 저장소 이름은 `LeeHanYeong.github.io`라는 이름을 가져야 한다.
+## GitHub Pages 배포
 
+1. **로컬 Git저장소 초기화, 변경사항 커밋**  
 
-![Pages_Repository]({{ site.url }}/images/github-new-repository.png){:width="253px"}
-![Pages_Repository]({{ site.url }}/images/github-pages-repository.png){:width="595px"}
+   ```shell
+   # 블로그를 생성한 디렉토리 내에서 실행
+   ❯ git init
+   Initialized empty Git repository in /Users/lhy/projects/blog/.git/
+   
+   ❯ git add -A
+   ❯ git commit -m 'First commit'
+   ```
 
+2. **GitHub에 Pages용 리모트 저장소 생성**  
+   **GitHub사용자명.github.io**으로 저장소를 생성한다. (필자의 경우 LeeHanYeong.github.io)
 
-#### 로컬 git저장소 생성 및 .gitignore작성
-`Jekyll`블로그 폴더에서 실행한다. 리모트 저장소 주소를 `git@`으로 시작하고 싶다면 `GitHub`계정에 `SSH-Key`가 등록되어 있는 상태여야 한다.
+3. **리모트 저장소 지정, Push**  
 
-`Ruby`, `macOS`, `Jekyll`에서 `Git`으로 버전관리에서 제외할 파일 목록을 위해 `.gitignore`파일을 생성해준다
+   ```shell
+   ❯ git remote add origin {저장소 주소}
+   ❯ git push -u origin main
+   ```
 
-```
-vi .gitignore
-```
-내용에는 [.gitignore(Ruby, Jekyll, macOS)](https://gist.github.com/LeeHanYeong/acb428567ba1b01d55ed9a078e46b32f){:target="_blank"}의 내용을 붙여넣는다.  
+4. **잠시 기다리면 서버에 배포**  
+   https://{자신의계정명}.github.io 로 접속해서 확인
 
-
-#### 리모트 저장소에 push
-`.gitignore`파일을 작성한 후 아래와 같이 리모트 저장소에 로컬 저장소의 내용을 업로드한다.
-
-```
-➜ git init
-➜ git add -A
-➜ git commit -m 'First commit'
-➜ git remote add origin git@github.com:LeeHanYeong/LeeHanYeong.github.io.git
-➜ git push origin master
-```
-
-#### 작동확인
-![Jekyll_GitHub_Pages]({{ site.url }}/images/jekyll-github-pages.png){:width="952px"}

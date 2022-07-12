@@ -11,3 +11,5 @@ group :jekyll_plugins do
   gem 'jekyll-feed'
   gem 'jekyll-assets'
 end
+
+gem "webrick", "~> 1.7"
