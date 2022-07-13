@@ -127,7 +127,7 @@ def lambda_handler(event, context):
 
 위 handler함수는 연결된 사용자 지정 도메인에 mapping사전 객체에 정의된 경로가 전달되면 그 값으로, 정의된 값이 없다면 제 블로그로 redirect하는 응답을 돌려줍니다. 코드를 수정하고 코드 위쪽의 Deploy버튼을 눌러 변경사항을 배포해줍니다.
 
-https://url.lhy.kr/django로 접속하면 Django공식문서로 이동하며, https://url.lhy.kr/naver로 접속하면 네이버 메인 페이지로 이동하고, 그 외의 URL이나 경로를 입력하지 않으면 https://lhy.kr(제 블로그)로 연결됩니다.
+**https://url.lhy.kr/django** 로 접속하면 Django공식문서로 이동하며, **https://url.lhy.kr/naver** 로 접속하면 네이버 메인 페이지로 이동하고, 그 외의 URL이나 경로를 입력하지 않으면 **https://lhy.kr** (제 블로그)로 연결됩니다.
 
 
 
