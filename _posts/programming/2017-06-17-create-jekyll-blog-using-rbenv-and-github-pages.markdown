@@ -153,7 +153,7 @@ Jekyll을 로컬환경에서 실행하기 위해서는 특정 버전 이상의 R
     ```
 
 14. **localhost:4000에서 실행 확인**  
-    ![serve]({{ site.url }}/images/2017-06-17-create-jekyll-blog-using-rbenv-and-github-pages/serve.png)
+    ![serve](../../images/2017-06-17-create-jekyll-blog-using-rbenv-and-github-pages/serve.png)
 
 
 
