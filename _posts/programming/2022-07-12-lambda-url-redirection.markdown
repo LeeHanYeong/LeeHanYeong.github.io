@@ -44,7 +44,7 @@ Lambda는 별도의 서버 없이 코드를 실행할 수 있는 서버리스 �
 
 ![lambda2](../../images/2022-07-12-lambda-url-redirection/lambda2.png)
 
-함수를 생성 완료했으면, 외부에서 요청을 받아 Lambda에 전달할 API Gateway를 생성합니다. 위 화면의 + 트리거 추가 버튼으로도 추가 할 수 있지만, 저는 경로 설정에서 문제를 겪어 직접 [API Gateway Console](https://console.aws.amazon.com/apigateway/home)에서 생성합니다.
+함수를 생성했으면 외부에서 요청을 받아 Lambda에 전달할 API Gateway를 생성합니다. 위 화면의 + 트리거 추가 버튼으로도 추가 할 수 있지만, 저는 경로 설정에서 문제를 겪어 직접 [API Gateway Console](https://console.aws.amazon.com/apigateway/home)에서 생성합니다.
 
 ## API Gateway 생성
 
