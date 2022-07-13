@@ -136,13 +136,13 @@ Jekyll을 로컬환경에서 실행하기 위해서는 특정 버전 이상의 R
 
     ```shell
     ❯ gem install jekyll bundler
-    ❯ bundle add webrick  # Jekyll 실행 위해 필요한 라이브러리
     ```
 
 12. **블로그를 생성할 위치로 이동, Jekyll 블로그 프로젝트 생성**  
 
     ```shell
     ❯ jekyll new blog  # blog는 생성할 디렉토리 이름으로 변경 가능
+    ❯ bundle add webrick  # Jekyll 실행 위해 필요한 추가 라이브러리
     ```
 
 13. **생성된 디렉토리로 이동, 로컬에서 블로그 서버 실행**  
