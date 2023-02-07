@@ -37,36 +37,28 @@ defaults:
       type: "posts"
     values:
       permalink: "til/:year/:month/:day"
+      sitemap: false
   -
     scope:
       path: "_posts/linux"
       type: "posts"
     values:
       permalink: "linux/:title"
+      sitemap: false
   -
     scope:
       path: "_posts/mac"
       type: "posts"
     values:
       permalink: "mac/:title"
-  -
-    scope:
-      path: "_posts/teach"
-      type: "posts"
-    values:
-      permalink: "lecture/:title"
+      sitemap: false
   -
     scope:
       path: "_posts/lecture/django/instagram"
       type: "posts"
     values:
       permalink: "lecture/django/instagram/:title"
-  -
-    scope:
-      path: "_posts/lecture/django/mashup-8th"
-      type: "posts"
-    values:
-      permalink: "lecture/django/mashup-8th/:title"
+      sitemap: false
 
 # Accounts
 disqus:
@@ -77,6 +69,7 @@ linkedin_username: hanyeong-lee-03256590
 
 # Other settings
 timezone: Asia/Seoul
+lang: ko_KR
 sass:
   sass_dir: _sass
   # style: compressed
@@ -87,6 +80,8 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-assets
+  - jekyll-seo-tag
+  - jekyll-sitemap
 exclude:
   - Gemfile
   - Gemfile.lock
