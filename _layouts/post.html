@@ -11,9 +11,34 @@ comments: true
         {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
         {{ page.date | date: date_format }}
       </time>
+      {% if page.categories %}
+         <div style="margin-top: -10px;">
+          {% for category in page.categories %}
+            <span class="badge
+            {% if category == 'Django' %}
+              badge-success
+            {% elsif category == 'AWS' %}
+              badge-warning
+            {% elsif category == 'Docker' %}
+              badge-info
+            {% elsif category == 'Python' %}
+              badge-primary
+            {% else %}
+              badge-dark
+            {% endif %}"
+               style="
+               {% if category == 'HomeAssistant' %}
+                background-color: #41bdf5;
+               {% endif %}
+               "
+            >{{ category }}</span>
+            {% endfor %}
+          </div>
+      {% endif %}
       {% if page.author %}
         • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>
-      {% endif %}</p>
+      {% endif %}
+      </p>
       {% if page.comments %} • <a href="{{ site.url }}{{ page.url }}#disqus_thread">0 Comments</a>{% endif %}
   </header>
 

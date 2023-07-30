@@ -18,7 +18,13 @@
       badge-primary
     {% else %}
       badge-dark
-    {% endif %}">{{ category }}</a>
+    {% endif %}"
+       style="
+       {% if category == 'HomeAssistant' %}
+        background-color: #41bdf5;
+       {% endif %}
+       "
+    >{{ category }}</a>
     {% endfor %}
   {% endif %}
 </li>
