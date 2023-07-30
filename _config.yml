@@ -33,11 +33,10 @@ defaults:
       permalink: ":title"
   -
     scope:
-      path: "_posts/til"
+      path: "_posts/ha"
       type: "posts"
     values:
-      permalink: "til/:year/:month/:day"
-      sitemap: false
+      permalink: "ha/:title"
   -
     scope:
       path: "_posts/linux"
