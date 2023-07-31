@@ -11,15 +11,15 @@ categories: ['HomeAssistant', 'SmartThings']
 공기질 측정기로 삼성의 에어모니터를 사용하고 있습니다. (ACM-B1M0S)  
 Zigbee가 아닌 Wi-Fi방식이지만, 미세먼지(PM10), 초미세먼지(PM2.5), 극초미세먼지(PM1.0), TVOC(생활가스), 이산화탄소, 온도/습도... 집안 공기질 측정에 필요한 정보들은 전부 제공되고, 스마트싱스를 통해 홈 어시스턴트와 연동이 가능합니다.
 
-<img src="../../images/2023-07-29-ha-airmonitor/air1.jpeg" style="max-width: 600px;">
+<img src="../../images/2023-07-29-ha-airmonitor/air1.jpeg">
 
 스마트싱스 앱에서는 모든 정보가 잘 나타납니다.
 
-<img src="../../images/2023-07-29-ha-airmonitor/air2.jpeg" style="max-width: 600px;">
+<img src="../../images/2023-07-29-ha-airmonitor/air2.jpeg">
 
 홈 어시스턴트에서는 스마트싱스 [Capability](https://developer.smartthings.com/docs/devices/capabilities/capabilities/)의 Attribute명으로 나타납니다.
 
-<img src="../../images/2023-07-29-ha-airmonitor/air3.png" style="max-width: 600px;">
+<img src="../../images/2023-07-29-ha-airmonitor/air3.png">
 
 공기질 측정기를 운용하는 이유가 미세먼지와 이산화탄소 수치를 보기 위해서인데, 홈 어시스턴트에서는 극초미세먼지(PM1.0)수치가  나타나지 않습니다.  
 (PM10은 Dust Level, PM2.5는 Fine Dust Level로 표시됩니다)
@@ -121,11 +121,11 @@ class Attribute:
 
 수정한 pysmatthings코드를 참조하도록 Home Assistant core코드의 링크를 수정하고 실행합니다.
 
-<img src="../../images/2023-07-29-ha-airmonitor/air7.png" style="max-width: 600px;">
+<img src="../../images/2023-07-29-ha-airmonitor/air7.png">
 
 구성요소에서 "에어모니터 Very"까지 입력하니 Very Fine Dust Level항목이 나타납니다. 얼마전에 설치한 에어모니터 플러스도 같이 해결됐군요.
 
-<img src="../../images/2023-07-29-ha-airmonitor/air6.png" style="max-width: 600px;">
+<img src="../../images/2023-07-29-ha-airmonitor/air6.png">
 
 이제 홈 어시스턴트에서도 PM1.0(극초미세먼지) 수치를 확인 할 수 있습니다.
 
