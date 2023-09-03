@@ -130,7 +130,10 @@ a {
 blockquote {
   color: $grey-color;
   border-left: 4px solid $grey-color-light;
-  padding-left: 15px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
+  margin-top: 5px;
   @include relative-font-size(1.0);
   letter-spacing: -1px;
   // font-style: italic;

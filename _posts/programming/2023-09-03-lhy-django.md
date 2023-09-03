@@ -3,12 +3,11 @@ layout: post
 title: '이한영의 Django(장고) 입문'
 categories: ['Python', 'Django']
 ---
-
 입문자용 Django책을 집필했습니다.
 
 편집자님이 입문자 대상으로 강의하거나 글을 쓸 때 가장 중요하게 생각하는것이 뭐냐고 물어보셨는데, 일단 되는것을 만들어서 흥미를 잃지 않는것이 가장 중요하다고 했더니 책 소개 이미지를 이렇게 만들어주셨습니다.
 
-<img src="../../images/2023-09-03-lhy-django/django1.png" style="max-width: 400px;">
+<img src="../../images/2023-09-03-lhy-django/django1.png" style="width: 400px; margin: inherit;">
 
 입문자용 도서인 만큼, 제가 입문/초급수준에서 프로그래밍 도서를 보며 어려웠거나 별로라고 느꼈던 부분들을 해결하는데 많이 신경썼습니다. 사실, 입문자를 위해 세부적으로 신경 쓴 부분은 지금까지 제가 참고했던 **어떤 Django도서보다도** 뛰어나다고 자부합니다.
 
@@ -18,9 +17,11 @@ categories: ['Python', 'Django']
 
 원고는 완성했지만, 실제 입문자들이 제가 쓴 책을 쉽게 볼 수 있을지를 검토해야했습니다.
 
-<div style="text-align: center;"><img src="../../images/2023-09-03-lhy-django/django4.png" style="max-width: 250px;"></div>
+<div style="text-align: center;"><img src="../../images/2023-09-03-lhy-django/django4.png" style="width: 250px; margin: inherit;"></div>
 
 > 마무리한 원고의 챕터 목록. 이때만 해도 끝난 줄 알았지만...
+
+
 
 이를 위해 웹 프로그래밍을 정말 처음 접하는 입문자들을 대상으로 책 내용을 강의하며, 어려운 부분의 피드백을 받아 원고를 수정했습니다. 쉽게 쓴다고 썼는데도, 이 때 책에서 정말 많은 부분이 수정되었습니다. 
 
@@ -53,7 +54,7 @@ Django로 사이트를 만들기 위해서는 파이썬과 HTML, CSS, 기초 자
 모델 코드를 구성하면 데이터베이스의 테이블이 어떤 형태를 가지게 되는지 스프레드시트의 표 형태로 설명하고, 새로운 Column을 추가하며 변경되는 모습과 새 데이터가 추가되었을 때 Row가 어떤식으로 쌓이는지, 다대일/다대다 연결들이 테이블데이터로 어떻게 저장되는지와 같이 데이터베이스의 변화를 이해하기 쉬운 형태로 알려주는 것에 중점을 두었습니다. 
 
 > **1:N 관계를 설명하는 책 본문의 예시**  
-> <img src="../../images/2023-09-03-lhy-django/django5.png" style="max-width: 600px;">
+> <img src="../../images/2023-09-03-lhy-django/django5.png" style="width: 600px; margin: inherit;">
 
 ## 언제, 어떤 환경에서 시작하더라도 문제없는 실행
 
@@ -68,7 +69,7 @@ Django와 같은 백엔드 프레임워크는 일반적인 기능에서는 프�
 이러한 문제를 근본적으로 해결하기 위해, 파이썬 버전이나 Django버전, 서드파티 라이브러리들을 설치 할 때 앞으로 새로운 버전이 나온다 하더라도 책을 쓴 시점과 동일한 버전의 파이썬/Django/서드파티 라이브러리를 사용하도록 설치 명령어를 구성했습니다.
 
 > **미래에 설치하더라도 반드시 4.2.x버전이 설치되도록 설치 명령어를 제한한 예시**  
-> <img src="../../images/2023-09-03-lhy-django/django6.png" style="max-width: 600px;">
+> <img src="../../images/2023-09-03-lhy-django/django6.png" style="width: 600px; margin: inherit;">
 
 라이브러리 버전과는 관계없이, IDE나 OS환경이 바뀌었을 경우에는 책을 위해 별도로 구성한 웹 사이트([https://django.ac](https://django.ac)) 에서 알려드리려고 합니다.
 
@@ -88,12 +89,12 @@ Django와 같은 백엔드 프레임워크는 일반적인 기능에서는 프�
 영상강의와는 달리, 인쇄물에서는 이전과 비교했을 때 어떤 코드가 추가되었는지 알기 쉽지않습니다. 추가된 코드에는 다른 색상으로 강조표시하여 가독성을 높였습니다.
 
 > **강조 표시 된 코드**  
-> <img src="../../images/2023-09-03-lhy-django/django7.png" style="max-width: 600px;">
+> <img src="../../images/2023-09-03-lhy-django/django7.png" style="width: 600px; margin: inherit;">
 
 추가 된 코드 외에도, 터미널에서 실제 입력하는 명령어와 로그를 헷갈리지 않도록 강조표시로 구분했습니다.
 
 > **명령어와 로그 구분**  
-> <img src="../../images/2023-09-03-lhy-django/django10.png" style="max-width: 600px;">
+> <img src="../../images/2023-09-03-lhy-django/django10.png" style="width: 600px; margin: inherit;">
 
 ## 외부 링크의 단축 URL제공
 
@@ -121,7 +122,7 @@ Django와 같은 백엔드 프레임워크는 일반적인 기능에서는 프�
 > ![django8](../../images/2023-09-03-lhy-django/django8.png)
 
 > 각 챕터별로 구분 된 다운로드 링크  
-> <img src="../../images/2023-09-03-lhy-django/django9.png" style="max-width: 400px;">
+> <img src="../../images/2023-09-03-lhy-django/django9.png" style="width: 400px; margin: inherit;">
 
 ## 집필 후기
 
