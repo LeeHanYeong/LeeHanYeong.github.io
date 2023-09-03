@@ -17,7 +17,7 @@ categories: ['Python', 'Django']
 
 원고는 완성했지만, 실제 입문자들이 제가 쓴 책을 쉽게 볼 수 있을지를 검토해야했습니다.
 
-<div style="text-align: center;"><img src="../../images/2023-09-03-lhy-django/django4.png" style="width: 250px; margin: inherit;"></div>
+<img src="../../images/2023-09-03-lhy-django/django4.png" style="width: 250px; margin: inherit;">
 
 > 마무리한 원고의 챕터 목록. 이때만 해도 끝난 줄 알았지만...
 
