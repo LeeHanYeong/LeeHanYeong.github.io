@@ -246,14 +246,26 @@ hr {
 
 
 img {
-  max-width: 70%;
+  max-width: 60%;
   margin: 1rem auto;
   display: block;
 }
 .img-caption {
   text-align: center;
-  font-weight: bold;
+  font-size: 0.7rem;
   margin-bottom: 2rem;
+  color: #666;
+  
+  img {
+    margin-bottom: 0.2rem;
+  }
+}
+.img-border {
+  img {
+    padding: 0.5rem;
+    border: 1px solid #eee;
+    border-radius: 1px;
+  }
 }
 @include media-query($on-laptop) {
   img {
