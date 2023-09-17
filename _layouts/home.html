@@ -17,7 +17,8 @@ permalink: /
         </a>
       </h2>
       <ul class="post-list mb-0" style="font-size: 0.7rem;">
-        {% for post in site.posts limit: 3 %}
+        {% assign post_list = site.posts | where_exp:"post", "post.path contains '_posts/programming/'" %}
+        {% for post in post_list limit: 3 %}
           {% include post-list-item.html post=post view_tag=true %}
         {% endfor %}
       </ul>

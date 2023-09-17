@@ -36,6 +36,20 @@ code.highlighter-rouge {
   background-color: #272822;
   padding: 3px 6px;
 }
+nav.navbar {
+  position: fixed;
+  width: 100%;
+  padding: .3rem 15px;
+  background-color: white;
+  z-index: 999;
+  a.navbar-brand {
+    font-size: 1.1rem;
+  }
+}
+.navbar-toggler {
+  padding: 0.2rem 0.6rem;
+  font-size: 1rem;
+}
 
 // Theme customize
 .social-media-list.horizontal {
@@ -53,6 +67,41 @@ code.highlighter-rouge {
 }
 .wrapper {
   max-width: calc(1200px - (30px * 2))
+}
+div.post-content [id] {
+  padding-top: 55px;
+  margin-top: -55px;
+}
+// div.post-content [id]::before {
+//   content: '';
+//   display: block;
+//   height:      75px;
+//   margin-top: -75px;
+//   visibility: hidden;
+// }
+.post {
+  position: relative;
+}
+.post-toc {
+  position: fixed;
+  top: 55px;
+  font-size: 0.8rem;
+  > ul#toc, .post-toc-title {
+    position: absolute;
+    left: 960px;
+    width: 300px;
+  }
+  > .post-toc-title {
+    font-size: .9rem;
+    font-weight: bold;
+  }
+  > ul#toc {
+    margin-top: 1.4rem;
+  }
+  ul, li {
+    margin-left: 5px;
+    list-style-type: circle;
+  }
 }
 .post-list {
   .post-link-heading {
@@ -155,7 +204,7 @@ img.icon {
 }
 
 .content-container {
-  padding-top: 30px;
+  padding-top: 8px;
   padding-bottom: 50px;
 }
 .home-image-container {
@@ -194,3 +243,30 @@ ul.project-list {
     }
   }
 }
+// lecture
+.lecture > .post-header {
+  margin-bottom: 10px;
+}
+.title-number {
+  font-weight: normal;
+  font-size: 0.9em;
+}
+.title-lecture {
+  font-size: .8rem;
+  color: #666;
+  margin-bottom: 0;
+}
+.title-part {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  padding-top: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.title-chapter {
+  padding-top: 5px;
+}
+
+@import 'media';

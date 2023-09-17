@@ -4,7 +4,7 @@
 .site-header {
   border-top: 5px solid $grey-color-dark;
   border-bottom: 1px solid $grey-color-light;
-  min-height: $spacing-unit * 1.865;
+  min-height: 48px;
 
   // Positioning context for the mobile navigation icon
   position: relative;
@@ -189,6 +189,14 @@
 
   > li {
     margin-bottom: $spacing-unit;
+
+    &.post-list-title {
+      font-weight: bold;
+      font-size: 1rem;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
   }
 }
 

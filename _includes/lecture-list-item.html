@@ -1,0 +1,8 @@
+<li categories="{% for category in post.categories %}category-{{ category }} {% endfor %}" class="post-list-item">
+    {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+    {% assign post = include.post %}
+  <span class="post-meta">{{ post.date | date: date_format }}</span>
+    <h2 class="post-link-heading">
+        <a class="post-link" href="{{ post.url | relative_url }}">Chapter{{ post.chapter_number }}. {{ post.chapter }}</a>
+    </h2>
+</li>

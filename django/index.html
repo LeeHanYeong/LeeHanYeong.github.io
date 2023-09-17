@@ -1,0 +1,25 @@
+---
+layout: default
+---
+<div class="home">
+  <h1 class="page-heading">이한영의 Django(장고) 입문</h1>
+  <ul class="post-list">
+    <li class="post-list-title">
+        <h2>서문</h2>
+    </li>
+    <li class="post-list-item">
+        <h2 class="post-link-heading">
+            <a class="post-link" href="/lhy-django">도서 집필 후기</a>
+        </h2>
+    </li>
+
+    <li class="post-list-title">
+        <h2>Part1. Django 웹 개발 준비</h1>
+    </li>
+    {% assign post_list = site.posts | where_exp:"post", "post.path contains '_posts/lecture/django/book-introduction/part1/'" | reverse %}
+    {% for post in post_list %}
+      {% include lecture-list-item.html post=post view_tag=false %}
+    {% endfor %}
+    
+  </ul>
+</div>

@@ -56,8 +56,15 @@ defaults:
       path: "_posts/lecture/django/instagram"
       type: "posts"
     values:
-      permalink: "lecture/django/instagram/:title"
+      permalink: "lectures/django/instagram/:title"
       sitemap: false
+  -
+    scope:
+      path: "_posts/lecture/django/book-introduction"
+      type: "posts"
+    values:
+      permalink: "django/intro/:title"
+      sitemap: true
 
 # Accounts
 disqus:
@@ -82,6 +89,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-sass-converter
+  - jekyll-toc
 exclude:
   - Gemfile
   - Gemfile.lock

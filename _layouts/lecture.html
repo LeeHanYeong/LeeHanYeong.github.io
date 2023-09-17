@@ -1,0 +1,35 @@
+---
+layout: default
+comments: true
+---
+<article class="post lecture" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="title-lecture">{{ page.lecture | escape }}</div>
+    <div class="title-part" itemprop="name headline">
+        <span class="title-number">Part{{ page.part_number }}.</span>
+        <span>{{ page.part | escape }}</span>
+    </div>
+    <h1 class="title-chapter">
+        <span class="title-number">Chapter{{ page.chapter_number }}.</span>
+        <span>{{ page.chapter | escape }}</span>
+    </h1>
+  </header>
+
+  <div class="post-toc">
+    <div class="post-toc-title">Table of contents</div>
+    {% toc %}
+  </div>
+
+  <div class="post-content" itemprop="articleBody">
+    {{ content }}
+  </div>
+  
+  <!-- utteranc.es -->
+  <script src="https://utteranc.es/client.js"
+      repo="leehanyeong/leehanyeong.github.io"
+      issue-term="pathname"
+      theme="github-light"
+      crossorigin="anonymous"
+      async>
+  </script>
+</article>
