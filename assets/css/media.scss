@@ -21,11 +21,11 @@
         border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
 
-        > ul#toc, .post-toc-title {
+        > ul, .post-toc-title {
             position: relative;
             left: inherit;
         }
-        > ul#toc {
+        > ul {
             margin-top: 0;
         }
     }

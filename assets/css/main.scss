@@ -86,7 +86,7 @@ div.post-content [id] {
   position: fixed;
   top: 55px;
   font-size: 0.8rem;
-  > ul#toc, .post-toc-title {
+  > ul, .post-toc-title {
     position: absolute;
     left: 960px;
     width: 300px;
@@ -95,7 +95,7 @@ div.post-content [id] {
     font-size: .9rem;
     font-weight: bold;
   }
-  > ul#toc {
+  > ul {
     margin-top: 1.4rem;
   }
   ul, li {

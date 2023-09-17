@@ -89,7 +89,6 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-sass-converter
-  - jekyll-toc
 exclude:
   - Gemfile
   - Gemfile.lock
