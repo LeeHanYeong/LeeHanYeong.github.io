@@ -4,6 +4,7 @@
 ---
 @import "minima";
 @import "common/utterances";
+@import "common/media";
 
 blockquote {
   letter-spacing: 0;
@@ -268,5 +269,3 @@ ul.project-list {
 .title-chapter {
   padding-top: 5px;
 }
-
-@import 'media';
