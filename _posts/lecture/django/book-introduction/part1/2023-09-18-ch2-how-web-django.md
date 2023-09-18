@@ -3,8 +3,8 @@ layout: lecture
 lecture: "이한영의 Django입문"
 part_number: "1"
 part: "Django 웹 개발 준비"
-chapter_number: "1"
-chapter: "Django와 웹 사이트의 이해"
+chapter_number: "2"
+chapter: "우리는 어떻게 웹 사이트를 볼 수 있을까?"
 categories: ['Python', 'Django']
 toc: true
 ---
