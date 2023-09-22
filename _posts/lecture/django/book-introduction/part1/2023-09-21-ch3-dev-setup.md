@@ -50,7 +50,7 @@ Professional버전은 Django개발 시 더 강력한 지원을 해주므로, 원
 - 다운로드 링크: [https://www.jetbrains.com/pycharm/download](https://www.jetbrains.com/pycharm/download/#section=mac)
 - Jetbrains 교육용 라이선스: https://www.jetbrains.com/community/education
 
-![3.2.1. Pycharm Community Edition 다운로드_1](../../../../../images/2023-09-21-ch3-dev-setup/3.2.1. Pycharm Community Edition 다운로드_1.png)
+![3.2.1. Pycharm Community Edition 다운로드_1](../../../../../images/2023-09-21-ch3-dev-setup/3.2.1-1.png)
 
 PyCharm 다운로드 페이지
 {:.img-caption}
@@ -59,13 +59,13 @@ PyCharm 다운로드 페이지
 
 설치 시 옵션에서 모든 선택항목을 체크한다.
 
-![3.2.1. Pycharm Community Edition 다운로드_2](../../../../../images/2023-09-21-ch3-dev-setup/3.2.1. Pycharm Community Edition 다운로드_2.png)
+![3.2.1. Pycharm Community Edition 다운로드_2](../../../../../images/2023-09-21-ch3-dev-setup/3.2.1-2.png)
 
 #### PyCharm Community Edition 설치 - macOS
 
 설치 프로그램(dmg)을 열고 왼쪽의 아이콘을 우측 Applications디렉터리로 드래그한다.
 
-![3.2.1. Pycharm Community Edition 다운로드_3](../../../../../images/2023-09-21-ch3-dev-setup/3.2.1. Pycharm Community Edition 다운로드_3.png)
+![3.2.1. Pycharm Community Edition 다운로드_3](../../../../../images/2023-09-21-ch3-dev-setup/3.2.1-3.png)
 
 ### 3.2.2. 새 프로젝트 생성
 
