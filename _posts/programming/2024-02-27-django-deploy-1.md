@@ -306,6 +306,7 @@ deploy
 **index.html에서 favicon파일을 사용하도록 HTML수정**
 
 ```html
+{% raw %}
 <!-- templates/index.html -->
 {% load static %}
 <!doctype html>
@@ -317,6 +318,7 @@ deploy
     <h1>deploy</h1>
 </body>
 </html>
+{% endraw %}
 ```
 
 ![html_favicon](../../images/2024-02-27-django-deploy-1/html_favicon.png)
