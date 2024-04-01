@@ -12,6 +12,8 @@ categories: ['Python', 'Django', 'Docker']
 
 배포과정은 다음 순서로 진행됩니다.
 
+
+
 1. **Django프로젝트 세팅 (현 포스트)** 
    - Django 설치 및 초기설정
    - 개발환경 정적파일 설정
@@ -42,6 +44,8 @@ categories: ['Python', 'Django', 'Docker']
    - 인증서를 사용해 HTTPS접속 설정
    - Docker이미지를 사용한 자동화
 
+
+
 ## 1. Django 설치 및 초기설정
 
 ### 1-1 .Django 설치
@@ -65,6 +69,8 @@ Successfully installed asgiref-3.7.2 django-4.2.11 sqlparse-0.4.4
 ❯ django-admin startproject config .
 ```
 
+
+
 **프로젝트 구조 확인**
 
 ```
@@ -80,6 +86,8 @@ deploy
 └── manage.py
 ```
 
+
+
 ### 1-2. Index페이지 구성
 
 **TEMPLATES_DIR설정**
@@ -94,6 +102,8 @@ TEMPLATES = [
         "DIRS": [TEMPLATES_DIR],
 ```
 
+
+
 **View**
 
 ```python
@@ -103,6 +113,8 @@ from django.shortcuts import render
 def index(request):
     return render(request, "index.html")
 ```
+
+
 
 **URLconf**
 
@@ -119,6 +131,8 @@ urlpatterns = [
 ]
 ```
 
+
+
 **Template**
 
 ```html
@@ -131,7 +145,9 @@ urlpatterns = [
 </html>
 ```
 
-runserver실행 후 localhost:8000에서 Index View동작 확인
+
+
+**runserver실행 후 localhost:8000에서 Index View동작 확인**
 
 ![index](../../images/2024-02-27-django-deploy-1/index.png)
 
@@ -174,6 +190,8 @@ INSTALLED_APPS = [
 ]
 ```
 
+
+
 **모델 생성**
 
 ```python
@@ -183,6 +201,8 @@ from django.db import models
 class SamplePost(models.Model):
     post_image = models.ImageField()
 ```
+
+
 
 **DB변경사항 생성 및 적용**
 
@@ -203,6 +223,8 @@ Running migrations:
   Applying sample.0001_initial... OK
 ```
 
+
+
 **모델의 admin등록**
 
 ```python
@@ -214,6 +236,8 @@ from sample.models import SamplePost
 class SamplePostAdmin(admin.ModelAdmin):
     pass
 ```
+
+
 
 **실행확인**
 
@@ -230,6 +254,8 @@ Superuser created successfully.
 # runserver실행
 ❯ python manage.py runserver
 ```
+
+
 
 **runserver 실행 후 admin페이지 (http://localhost:8000/admin)에 접속, 생성한 superuser계정으로 로그인**
 
@@ -255,6 +281,8 @@ deploy
 ├── static/   <- 생성
 └── manage.py
 ```
+
+
 
 ### 2-2. 유저가 업로드하는 정적파일 설정
 
@@ -284,6 +312,8 @@ urlpatterns += static(
 )
 ```
 
+
+
 ## 3. 개발환경 동작 확인
 
 ### 3-1. static경로(소스코드에 포함된)의 정적파일 확인
@@ -302,6 +332,8 @@ deploy
 ![favicon](../../images/2024-02-27-django-deploy-1/favicon.png)
 브라우저에서 http://localhost:8000/static/favicon.ico 표시 확인
 {:img-caption}
+
+
 
 **index.html에서 favicon파일을 사용하도록 HTML수정**
 
@@ -345,6 +377,8 @@ SamplePost객체 상세화면의 이미지 링크 클릭
 /media/링크의 이미지 표시 확인
 {:.img-caption}
 
+
+
 ## 4. 디버그 모드
 
 Django의 정적파일 제공기능은 개발환경에서의 편의성을 위해서 사용하는 것이며, 디버그 모드에서만 동작합니다. 디버그 모드는 settings.py의 DEBUG변수로 설정하며, 기본값이 True로 활성화되어있습니다.
@@ -358,6 +392,8 @@ Django의 정적파일 제공기능은 개발환경에서의 편의성을 위해
 DEBUG = False  # 기본값은 True
 ```
 
+
+
 이대로 runserver를 실행하려하면 오류메세지가 출력됩니다.
 
 ```shell
@@ -366,6 +402,8 @@ DEBUG = False  # 기본값은 True
 CommandError: You must set settings.ALLOWED_HOSTS if DEBUG is False.
 ```
 
+
+
 디버그 모드가 해제되었을 때는, 반드시 `ALLOWED_HOSTS`배열에 값이 설정되어야합니다. `ALLOWED_HOSTS`는 Django로의 접속을 허용할 도메인 목록이며, 기본값은 비어있습니다. 지금은 로컬 환경에서 Django를 실행하고 있으므로, 배열에 `localhost`를 추가합니다.
 
 ```python
@@ -373,6 +411,8 @@ CommandError: You must set settings.ALLOWED_HOSTS if DEBUG is False.
 DEBUG = False
 ALLOWED_HOSTS = ["localhost"]  # 기본값은 빈 배열 []
 ```
+
+
 
 다시 runserver를 실행합니다.
 
@@ -388,6 +428,8 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
 
+
+
 ### 4-2. static경로(소스코드에 포함된)의 정적파일 기능 중단 확인
 
 관리자페이지(http://localhost:8000/admin/)로 접속 후, `cmd + shift + r`로 캐시를 삭제하며 페이지를 새로고침합니다. CSS스타일이 적용되지 않은 페이지가 나타납니다.
@@ -399,6 +441,8 @@ css, js와 같은 정적파일이 적용되지 않은 관리자 페이지
 ![admin_dev_tool](../../images/2024-02-27-django-deploy-1/admin_dev_tool.png)
 개발자 도구 (cmd + option + i)를 켜고 새로고침 하면 css파일을 찾을 수 없다는 에러(404)가 발생함을 알 수 있습니다.
 {:img-caption}
+
+
 
 ### 4-3. media경로(유저가 업로드한)의 정적파일 기능 중단 확인
 
