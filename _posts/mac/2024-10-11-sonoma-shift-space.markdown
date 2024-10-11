@@ -93,7 +93,7 @@ Open Anyway → Text Editor클릭
 
 
 
-![settings1](../../images/2024-10-11-sonoma-shift-space/settings1-8628461.png)
+![settings1](../../images/2024-10-11-sonoma-shift-space/settings1.png)
 
 ### 키보드 단축키 확인
 
