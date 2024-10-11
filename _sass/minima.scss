@@ -16,8 +16,10 @@ $background-color: #fdfdfd !default;
 $brand-color:      #2a7ae2 !default;
 
 $grey-color:       #828282 !default;
-$grey-color-light: color.adjust($grey-color, $lightness: 40%);
-$grey-color-dark:  color.adjust($grey-color, $lightness: -25%);
+// $grey-color-light: color.adjust($grey-color, $lightness: 40%);
+// $grey-color-dark:  color.adjust($grey-color, $lightness: -25%);
+$grey-color-light: lighten($grey-color, 40%);
+$grey-color-dark:  darken($grey-color, 25%);
 
 $blockquote-color-a: #3a72a5;
 $blockquote-color-a-visited: #224260;
